@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.agroskydroneaspirant.com)",
+      "PowerShell(Out-File *)",
+      "PowerShell(npm run *)",
+      "PowerShell(npx eslint . 2>&1 | Select-Object -Last 40)",
+      "PowerShell(npx eslint . -f json -o \"C:\\\\Users\\\\Sharif\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\B--e-commerce\\\\54d7f0a5-6003-40e9-9aa1-1e94a3118469\\\\scratchpad\\\\lint.json\"; $j = Get-Content \"C:\\\\Users\\\\Sharif\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\B--e-commerce\\\\54d7f0a5-6003-40e9-9aa1-1e94a3118469\\\\scratchpad\\\\lint.json\" -Raw | ConvertFrom-Json; $j | Where-Object { $_.messages.Count -gt 0 } | ForEach-Object { $f = $_.filePath; $_.messages | ForEach-Object { \"{0}:{1} [{2}] {3}\" -f $f, $_.line, $_.ruleId, \\($_.message -split \"`n\"\\)[0] } })",
+      "PowerShell(npx eslint . 2>&1 | Select-Object -Last 25; \"=== exit: $LASTEXITCODE ===\")",
+      "PowerShell(npx eslint . 2>&1 | Select-Object -Last 20; \"=== exit: $LASTEXITCODE ===\")"
+    ]
+  }
+}
