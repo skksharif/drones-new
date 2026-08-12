@@ -20,15 +20,15 @@ export function SortSelect({
       <label htmlFor={id} className="sr-only">
         Sort products
       </label>
-      <SortIcon className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-400" />
+      <SortIcon className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-ink-400" />
       <select
         id={id}
         value={value}
         onChange={(event) => onChange(event.target.value as SortValue)}
         className={cn(
-          "h-12 w-full appearance-none rounded-full border border-ink-200 bg-white",
-          "pl-10 pr-9 text-sm font-medium text-ink-700 outline-none transition-colors",
-          "hover:border-brand-700/40 focus:border-brand-600/50 focus:ring-4 focus:ring-brand-600/10",
+          "h-10 w-full appearance-none rounded-xl border border-ink-200 bg-white",
+          "pl-9 pr-8 text-[0.8125rem] font-medium text-ink-700 outline-none transition-colors",
+          "hover:border-brand-700/40 focus:border-brand-600/50 focus:ring-2 focus:ring-brand-600/10",
         )}
       >
         {SORT_OPTIONS.map((option) => (

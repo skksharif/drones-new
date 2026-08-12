@@ -70,7 +70,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <>
+    <div className="bg-white">
       <div className="border-b border-ink-100 bg-surface-muted">
         <div className="container-page py-6 sm:py-10">
           <Breadcrumbs crumbs={[{ name: "Contact", path: "/contact" }]} className="mb-4" />
@@ -160,6 +160,6 @@ export default function ContactPage() {
           </Reveal>
         </div>
       </div>
-    </>
+    </div>
   );
 }

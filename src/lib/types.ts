@@ -5,8 +5,14 @@ export type Availability = "in-stock" | "low-stock" | "made-to-order" | "out-of-
 export interface CategoryDef {
   slug: string;
   name: string;
+  /** Compact label for the category chip rail and bottom-sheet filters. */
+  short: string;
+  /** Emoji shown on the chip rail, section headings and category tiles. */
+  icon: string;
   /** Short blurb used on category cards and as the meta description seed. */
   description: string;
+  /** One-line tagline shown under the section heading on the home page. */
+  tagline: string;
   group: ProductGroup;
   image: string;
   /** Sub-types available inside this category, used by the subcategory filter. */

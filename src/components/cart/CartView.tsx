@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { TotalsList } from "@/components/checkout/TotalsList";
 import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import {
   CartIcon,
   ChevronRight,
   MinusIcon,
+  PhoneIcon,
   PlusIcon,
   ShieldIcon,
   TrashIcon,
@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/Icons";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { categoryName } from "@/lib/categories";
-import { FREE_SHIPPING_OVER, amountToFreeShipping, computeTotals } from "@/lib/checkout";
 import { formatPrice } from "@/lib/format";
 import { siteConfig, whatsappLink } from "@/lib/site";
-import { cn } from "@/lib/utils";
 import { useCart, type ResolvedLine } from "@/store/cart";
 
+/**
+ * The cart is a shortlist, not an order. Nothing is charged here and there is
+ * no checkout: the list exists so a customer can gather what they need and hand
+ * the whole thing to us on WhatsApp in one message.
+ */
 export function CartView() {
   const { lines, subtotal, count, enquiryCount, ready, setQty, remove, clear } = useCart();
 
@@ -33,7 +36,7 @@ export function CartView() {
       <EmptyState
         icon={<CartIcon className="size-6" />}
         title="Your cart is empty"
-        description="Browse our drones, frames, motors and spray hardware — or tell us what you need and we'll source it."
+        description="Add the drones, frames, motors or spray hardware you're interested in — then send us the whole cart on WhatsApp in one go."
         action={
           <>
             <ButtonLink href="/products">
@@ -49,12 +52,12 @@ export function CartView() {
     );
   }
 
-  const totals = computeTotals(subtotal);
-
-  const quoteMessage = whatsappLink(
-    `Hi ${siteConfig.name}, I'd like to order:\n\n${lines
-      .map((l) => `• ${l.product.name} × ${l.qty} — ${formatPrice(l.product.price)}`)
-      .join("\n")}\n\nSubtotal (priced items): ${formatPrice(subtotal)}`,
+  const enquiryLink = whatsappLink(
+    `Hi ${siteConfig.name}, I'd like a quote for these items:\n\n${lines
+      .map((line) => `• ${line.product.name} × ${line.qty} — ${formatPrice(line.product.price)}`)
+      .join("\n")}\n\nListed total (priced items): ${formatPrice(
+      subtotal,
+    )}\n\nPlease confirm availability, final pricing and delivery.`,
   );
 
   return (
@@ -97,34 +100,46 @@ export function CartView() {
       {/* Summary */}
       <aside className="mt-8 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:mt-0">
         <div className="rounded-[var(--radius-card)] border border-ink-200/70 bg-white p-5 shadow-[var(--shadow-soft)] sm:p-6">
-          <h2 className="text-base font-semibold">Order summary</h2>
+          <h2 className="text-base font-semibold">Cart summary</h2>
 
-          <FreeShippingMeter subtotal={subtotal} className="mt-4" />
+          <dl className="mt-4 space-y-2.5 text-sm">
+            <div className="flex justify-between">
+              <dt className="text-ink-500">Items</dt>
+              <dd className="font-medium text-ink-900">{count}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-ink-500">Listed total</dt>
+              <dd className="font-semibold text-ink-900">{formatPrice(subtotal)}</dd>
+            </div>
+          </dl>
 
-          <TotalsList totals={totals} className="mt-5" />
+          <p className="mt-3 rounded-xl bg-surface-muted p-3 text-xs leading-relaxed text-ink-500">
+            {enquiryCount > 0 ? (
+              <>
+                {enquiryCount} item{enquiryCount === 1 ? " is" : "s are"} priced on enquiry, so the
+                listed total covers the rest. We confirm final pricing, freight and availability on
+                WhatsApp.
+              </>
+            ) : (
+              <>
+                Listed prices only — we confirm final pricing, freight and availability on WhatsApp
+                before anything is agreed.
+              </>
+            )}
+          </p>
 
-          {enquiryCount > 0 ? (
-            <p className="mt-3 rounded-xl bg-surface-muted p-3 text-xs leading-relaxed text-ink-500">
-              {enquiryCount} item{enquiryCount === 1 ? " is" : "s are"} priced on enquiry and
-              isn&apos;t included in the total — we&apos;ll quote{" "}
-              {enquiryCount === 1 ? "it" : "them"} when we confirm your order.
-            </p>
-          ) : null}
-
-          <ButtonLink href="/checkout" fullWidth size="lg" className="mt-5">
-            Proceed to checkout
-            <ChevronRight className="size-4" />
-          </ButtonLink>
-
-          <ExternalButtonLink
-            href={quoteMessage}
-            variant="whatsapp"
-            fullWidth
-            className="mt-3"
-          >
-            <WhatsAppIcon className="size-4.5" />
-            Order on WhatsApp instead
+          <ExternalButtonLink href={enquiryLink} variant="whatsapp" fullWidth size="lg" className="mt-4">
+            <WhatsAppIcon className="size-5" />
+            Enquire on WhatsApp
           </ExternalButtonLink>
+
+          <a
+            href={`tel:${siteConfig.contact.phone}`}
+            className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-ink-200 bg-white text-sm font-medium text-ink-700 transition-colors hover:border-brand-700/40 hover:text-brand-800"
+          >
+            <PhoneIcon className="size-4.5" />
+            Call {siteConfig.contact.phoneDisplay}
+          </a>
 
           <ul className="mt-6 space-y-3 border-t border-ink-100 pt-5">
             <li className="flex items-start gap-2.5 text-xs text-ink-500">
@@ -139,59 +154,28 @@ export function CartView() {
         </div>
       </aside>
 
-      {/* Phone checkout bar — the summary card is a long scroll away on mobile,
-          so the total and the CTA follow the user up the page. It sits above the
-          bottom tab bar rather than covering it. */}
+      {/* Phone bar — the summary is a long scroll away, so the enquiry CTA
+          follows the user up the page. It sits above the bottom tab bar. */}
       <div className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-40 border-t border-ink-100 bg-white/95 px-4 py-3 shadow-[0_-6px_20px_-12px_rgb(16_17_22/0.3)] backdrop-blur-md lg:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-ink-400">
-              Total
+              {count} {count === 1 ? "item" : "items"}
             </p>
-            <p className="truncate text-lg font-bold leading-tight">
-              {formatPrice(totals.total)}
-            </p>
+            <p className="truncate text-base font-bold leading-tight">{formatPrice(subtotal)}</p>
           </div>
-          <ButtonLink href="/checkout" className="ml-auto flex-1 max-w-56" size="md">
-            Checkout
-            <ChevronRight className="size-4" />
-          </ButtonLink>
+          <ExternalButtonLink
+            href={enquiryLink}
+            variant="whatsapp"
+            className="ml-auto flex-1 max-w-56"
+          >
+            <WhatsAppIcon className="size-4.5" />
+            Enquire
+          </ExternalButtonLink>
         </div>
       </div>
       {/* Spacer so the last row is never hidden behind that bar. */}
       <div className="h-20 lg:hidden" aria-hidden />
-    </div>
-  );
-}
-
-function FreeShippingMeter({ subtotal, className }: { subtotal: number; className?: string }) {
-  const remaining = amountToFreeShipping(subtotal);
-  const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_OVER) * 100));
-
-  return (
-    <div className={className}>
-      <p className="text-xs leading-relaxed text-ink-600">
-        {remaining === 0 ? (
-          <>
-            <span className="font-semibold text-emerald-600">Free shipping unlocked</span> on this
-            order.
-          </>
-        ) : (
-          <>
-            Add <span className="font-semibold text-ink-900">{formatPrice(remaining)}</span> more
-            for free shipping.
-          </>
-        )}
-      </p>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-ink-100">
-        <div
-          className={cn(
-            "h-full rounded-full transition-all duration-500",
-            remaining === 0 ? "bg-emerald-500" : "gradient-brand",
-          )}
-          style={{ width: `${progress}%` }}
-        />
-      </div>
     </div>
   );
 }
@@ -213,13 +197,7 @@ function CartRow({
         href={`/products/${product.slug}`}
         className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-surface-sunken sm:size-24"
       >
-        <Image
-          src={product.image}
-          alt={product.alt}
-          fill
-          sizes="96px"
-          className="object-cover"
-        />
+        <Image src={product.image} alt={product.alt} fill sizes="96px" className="object-cover" />
       </Link>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -231,9 +209,7 @@ function CartRow({
             {product.name}
           </Link>
         </h3>
-        <p className="mt-0.5 text-xs text-ink-400">
-          {formatPrice(product.price)} each
-        </p>
+        <p className="mt-0.5 text-xs text-ink-400">{formatPrice(product.price)} each</p>
 
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-3">
           <div className="flex h-9 items-center rounded-full border border-ink-200">

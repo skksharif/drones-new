@@ -79,14 +79,14 @@ export function ProductBrowser({
   return (
     <div
       className={cn(
-        "lg:grid lg:grid-cols-[16.5rem_1fr] lg:items-start lg:gap-10 xl:grid-cols-[18rem_1fr]",
+        "lg:grid lg:grid-cols-[15rem_1fr] lg:items-start lg:gap-8 xl:grid-cols-[16rem_1fr]",
         className,
       )}
     >
       {/* Desktop sidebar */}
       <aside className="hidden lg:block" aria-label="Product filters">
         <div className="sticky top-[calc(var(--header-h)+1.5rem)] max-h-[calc(100dvh-var(--header-h)-3rem)] overflow-y-auto overscroll-contain pb-8 pr-2">
-          <div className="mb-5 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold">Filters</h2>
             {hasFilters ? (
               <button
@@ -105,7 +105,7 @@ export function ProductBrowser({
       <div className="min-w-0">
         {/* Toolbar — sticks under the header so filters and sort are always a
             thumb away, however far the grid has been scrolled. */}
-        <div className="sticky top-[var(--header-h)] z-30 -mx-4 mb-4 border-b border-ink-100 bg-white/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+        <div className="sticky top-[var(--header-h)] z-30 -mx-3 mb-3 border-b border-ink-100 bg-white/95 px-3 py-2.5 backdrop-blur-md sm:-mx-4 sm:px-4 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
           <div className="flex items-center gap-2 sm:gap-3">
             {showSearch ? (
               <SearchInput
@@ -124,9 +124,9 @@ export function ProductBrowser({
               type="button"
               onClick={() => setFiltersOpen(true)}
               aria-label={filterCount > 0 ? `Filters, ${filterCount} active` : "Filters"}
-              className="relative flex size-12 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 tap-highlight-none transition-colors active:bg-ink-100 sm:hidden"
+              className="relative flex size-10 shrink-0 items-center justify-center rounded-xl border border-ink-200 bg-white text-ink-700 tap-highlight-none transition-colors active:bg-ink-100 sm:hidden"
             >
-              <FilterIcon className="size-5" />
+              <FilterIcon className="size-4.5" />
               {filterCount > 0 ? (
                 <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full gradient-brand text-[0.625rem] font-bold text-white ring-2 ring-white">
                   {filterCount}
@@ -137,18 +137,18 @@ export function ProductBrowser({
               type="button"
               onClick={() => setSortOpen(true)}
               aria-label={`Sort products, currently ${activeSortLabel}`}
-              className="flex size-12 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 tap-highlight-none transition-colors active:bg-ink-100 sm:hidden"
+              className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-ink-200 bg-white text-ink-700 tap-highlight-none transition-colors active:bg-ink-100 sm:hidden"
             >
-              <SortIcon className="size-5" />
+              <SortIcon className="size-4.5" />
             </button>
 
             {/* Tablet: full filter button + native sort select */}
             <button
               type="button"
               onClick={() => setFiltersOpen(true)}
-              className="hidden h-12 shrink-0 items-center gap-2 rounded-full border border-ink-200 bg-white px-5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-700/40 sm:flex lg:hidden"
+              className="hidden h-10 shrink-0 items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 text-[0.8125rem] font-medium text-ink-700 transition-colors hover:border-brand-700/40 sm:flex lg:hidden"
             >
-              <FilterIcon className="size-4.5" />
+              <FilterIcon className="size-4" />
               Filters
               {filterCount > 0 ? (
                 <span className="flex size-5 items-center justify-center rounded-full gradient-brand text-[0.625rem] font-bold text-white">
@@ -159,14 +159,14 @@ export function ProductBrowser({
             <SortSelect
               value={filters.sort}
               onChange={setSort}
-              className="hidden w-52 shrink-0 sm:block"
+              className="hidden w-48 shrink-0 sm:block"
             />
           </div>
         </div>
 
         {/* Result count + active chips */}
-        <div className="mb-5 space-y-3">
-          <p className="text-sm text-ink-500" role="status" aria-live="polite">
+        <div className="mb-3 space-y-2">
+          <p className="text-xs text-ink-500 sm:text-sm" role="status" aria-live="polite">
             <span className="font-semibold text-ink-900">{total}</span>{" "}
             {total === 1 ? "product" : "products"}
             {filters.q.trim() ? (
@@ -194,7 +194,7 @@ export function ProductBrowser({
 
         {/* Results */}
         {items.length > 0 ? (
-          <ProductGrid products={items} priorityCount={2} />
+          <ProductGrid products={items} priorityCount={4} />
         ) : (
           <EmptyState
             icon={<SearchIcon className="size-6" />}

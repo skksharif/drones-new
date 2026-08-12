@@ -50,7 +50,7 @@ function servicesSchema() {
 
 export default function ServicesPage() {
   return (
-    <>
+    <div className="bg-white">
       <JsonLd id="ld-services" data={servicesSchema()} />
 
       <div className="border-b border-ink-100 bg-surface-muted">
@@ -158,6 +158,6 @@ export default function ServicesPage() {
           </Reveal>
         </div>
       </Section>
-    </>
+    </div>
   );
 }

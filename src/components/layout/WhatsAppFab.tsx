@@ -7,7 +7,7 @@ import { siteConfig, whatsappLink } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /** Pages whose own bottom CTA owns this corner of the screen. */
-const SUPPRESSED = ["/cart", "/checkout"];
+const SUPPRESSED = ["/cart"];
 
 /**
  * Floating WhatsApp CTA. Appears once the user scrolls past the fold so it

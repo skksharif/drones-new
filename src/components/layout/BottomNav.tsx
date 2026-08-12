@@ -2,21 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CartIcon, GridIcon, HomeIcon, SearchIcon } from "@/components/ui/Icons";
+import { CartIcon, GridIcon, HomeIcon, SupportIcon } from "@/components/ui/Icons";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 
 const TABS = [
   { href: "/", label: "Home", Icon: HomeIcon, exact: true },
-  { href: "/products", label: "Shop", Icon: GridIcon, exact: false },
-  { href: "/search", label: "Search", Icon: SearchIcon, exact: false },
+  { href: "/categories", label: "Categories", Icon: GridIcon, exact: false },
+  { href: "/contact", label: "Support", Icon: SupportIcon, exact: false },
   { href: "/cart", label: "Cart", Icon: CartIcon, exact: false },
 ] as const;
 
 /**
- * Phone/tablet tab bar. Shopping, searching and the cart are one thumb-reach
- * away from anywhere in the app, which is what separates a storefront that
- * feels like an app from one that feels like a brochure.
+ * Phone/tablet tab bar. Home, categories, support and the cart stay one
+ * thumb-reach away from anywhere in the app — which is what separates a
+ * storefront that feels like an app from one that feels like a brochure.
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -25,10 +25,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className={cn(
-        "fixed inset-x-0 bottom-0 z-50 border-t border-ink-200/70 bg-white/95 backdrop-blur-md lg:hidden",
-        "pb-[env(safe-area-inset-bottom,0px)]",
-      )}
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200/70 bg-white pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_20px_-12px_rgb(16_17_22/0.35)] lg:hidden"
     >
       <ul className="flex h-15 items-stretch">
         {TABS.map(({ href, label, Icon, exact }) => {
@@ -48,7 +45,7 @@ export function BottomNav() {
                 <span className="relative">
                   <Icon className="size-5.5" />
                   {badge > 0 ? (
-                    <span className="absolute -right-2 -top-1.5 flex min-w-4.5 items-center justify-center rounded-full gradient-brand px-1 text-[0.625rem] font-bold text-white ring-2 ring-white">
+                    <span className="absolute -right-2.5 -top-1.5 flex min-w-4.5 items-center justify-center rounded-full gradient-brand px-1 text-[0.625rem] font-bold text-white ring-2 ring-white">
                       {badge > 99 ? "99+" : badge}
                     </span>
                   ) : null}
@@ -56,7 +53,7 @@ export function BottomNav() {
                 <span className="text-[0.625rem] font-medium tracking-wide">{label}</span>
                 {active ? (
                   <span
-                    className="absolute inset-x-0 top-0 mx-auto h-0.5 w-10 rounded-full gradient-brand"
+                    className="absolute inset-x-0 bottom-0 mx-auto h-0.5 w-9 rounded-full gradient-brand"
                     aria-hidden
                   />
                 ) : null}

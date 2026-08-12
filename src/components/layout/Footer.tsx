@@ -35,22 +35,14 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-4">
-            <Link href="/" className="inline-flex items-center gap-3">
+            <Link href="/" className="inline-flex items-center">
               <Image
                 src="/images/brand/logo.png"
-                alt=""
-                width={48}
-                height={48}
-                className="size-11 rounded-xl bg-white/90 object-contain p-1"
+                alt={siteConfig.name}
+                width={1280}
+                height={853}
+                className="h-14 w-auto rounded-lg ring-1 ring-white/10"
               />
-              <span className="flex flex-col leading-none">
-                <span className="text-lg font-bold tracking-tight text-white">
-                  Agro<span className="text-brand-400">Sky</span>
-                </span>
-                <span className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink-400">
-                  {siteConfig.wordmark}
-                </span>
-              </span>
             </Link>
 
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-400">

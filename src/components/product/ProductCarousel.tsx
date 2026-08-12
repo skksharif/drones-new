@@ -58,21 +58,17 @@ export function ProductCarousel({
         onScroll={onScroll}
         role="region"
         aria-label={ariaLabel}
-        className={cn(
-          "no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 pb-1",
-          "sm:-mx-6 sm:gap-5 sm:px-6 lg:mx-0 lg:px-0",
-        )}
+        className="no-scrollbar flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth pb-0.5"
       >
         {products.map((product, index) => (
           <ProductCard
             key={product.id}
             product={product}
             priority={index < priorityCount}
-            className={cn(
-              "w-[62vw] max-w-72 shrink-0 snap-start",
-              "sm:w-[42vw] lg:w-[30%] xl:w-[23%]",
-            )}
-            sizes="(min-width: 1280px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 42vw, 62vw"
+            // Roughly two and a half cards on a phone: enough to read a card,
+            // and obvious that the rail keeps going.
+            className="w-38 shrink-0 snap-start sm:w-40 lg:w-44"
+            sizes="(min-width: 1024px) 176px, (min-width: 640px) 160px, 152px"
           />
         ))}
       </div>

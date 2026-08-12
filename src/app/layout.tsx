@@ -115,7 +115,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       {/* The padding keeps the footer clear of the fixed mobile tab bar; the
           token is 0 on desktop where that bar is hidden. */}
-      <body className="flex min-h-full flex-col bg-surface pb-[var(--bottom-nav-h)]">
+      <body className="flex min-h-full flex-col bg-surface-app pb-[var(--bottom-nav-h)]">
         <JsonLd id="ld-organization" data={organizationSchema()} />
         <JsonLd id="ld-website" data={websiteSchema()} />
         <JsonLd id="ld-store" data={localBusinessSchema()} />

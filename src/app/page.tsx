@@ -1,13 +1,16 @@
-import { CategoryRail } from "@/components/home/CategoryRail";
-import { HeroSlider } from "@/components/home/HeroSlider";
+import { PromoBanner } from "@/components/home/PromoBanner";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ButtonLink } from "@/components/ui/Button";
-import { ChevronRight } from "@/components/ui/Icons";
-import { Section, SectionHeading } from "@/components/ui/Section";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { stockedCategories } from "@/lib/categories";
+import {
+  getDeals,
+  getFeaturedProducts,
+  getProductsByCategory,
+  products,
+} from "@/lib/products";
 import { itemListSchema, pageMetadata } from "@/lib/seo";
-import { getBestsellers, getFeaturedProducts, products } from "@/lib/products";
 import { siteConfig } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -16,14 +19,11 @@ export const metadata = pageMetadata({
   path: "/",
 });
 
-/** Most recently added products, used for the "New arrivals" slider. */
-const newest = [...products]
-  .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
-  .slice(0, 10);
-
 export default function HomePage() {
-  const spotlight = getFeaturedProducts(5);
-  const bestsellers = getBestsellers(10);
+  const deals = getDeals(10);
+  // The banner only ever advertises live offers; featured stock stands in if
+  // nothing is currently discounted.
+  const banner = deals.length >= 2 ? deals.slice(0, 3) : getFeaturedProducts(3);
 
   return (
     <>
@@ -32,61 +32,49 @@ export default function HomePage() {
         data={itemListSchema(products, { name: "AgroSky Products", path: "/" })}
       />
 
-      {/* Opening slot: real products on a slider, not a static promo banner. */}
-      <HeroSlider products={spotlight} />
+      <h1 className="sr-only">
+        {siteConfig.name} — buy agricultural drones, frames, motors and spare parts online
+      </h1>
 
-      <Section className="py-8 sm:py-10">
-        <SectionHeading
-          eyebrow="Shop by category"
-          title="Find the part you're after"
-          description="Complete drones, airframes, power systems, controllers and spray hardware."
-          action={
-            <ButtonLink href="#shop" variant="outline" size="sm">
-              Shop all
-              <ChevronRight className="size-3.5" />
-            </ButtonLink>
-          }
-          className="mb-5 sm:mb-7"
-        />
-        <CategoryRail />
-      </Section>
+      <div className="container-page space-y-2.5 py-2.5 sm:space-y-3 sm:py-3">
+        <PromoBanner products={banner} />
 
-      <Section className="py-8 sm:py-10">
-        <SectionHeading
-          eyebrow="Bestsellers"
-          title="What operators reorder"
-          description="The frames, motors and controllers we ship most often — and keep deepest in stock."
-          className="mb-5 sm:mb-7"
-        />
-        <ProductCarousel products={bestsellers} ariaLabel="Bestselling products" />
-      </Section>
+        {deals.length > 0 ? (
+          <SectionCard
+            icon="🏷️"
+            title="Hot Deals"
+            subtitle="Best prices on top products"
+            href="/products"
+          >
+            <ProductCarousel products={deals} priorityCount={2} ariaLabel="Hot deals" />
+          </SectionCard>
+        ) : null}
 
-      <Section className="py-8 sm:py-10">
-        <SectionHeading
-          eyebrow="Just in"
-          title="New arrivals"
-          description="Freshly landed stock, newest first."
-          action={
-            <ButtonLink href="/products?sort=newest" variant="outline" size="sm">
-              See all new
-              <ChevronRight className="size-3.5" />
-            </ButtonLink>
-          }
-          className="mb-5 sm:mb-7"
-        />
-        <ProductCarousel products={newest} ariaLabel="New arrivals" />
-      </Section>
+        {stockedCategories.map((category) => (
+          <SectionCard
+            key={category.slug}
+            icon={category.icon}
+            title={category.name}
+            subtitle={category.tagline}
+            href={`/category/${category.slug}`}
+          >
+            <ProductCarousel
+              products={getProductsByCategory(category.slug)}
+              ariaLabel={category.name}
+            />
+          </SectionCard>
+        ))}
 
-      {/* The shop itself — full catalogue with search, filters and sorting. */}
-      <Section id="shop" className="border-t border-ink-100 py-10 sm:py-12">
-        <SectionHeading
-          eyebrow="Shop"
-          title="All products"
-          description={`Search, filter and sort the full catalogue — all ${products.length} drones, frames, motors, controllers, nozzles and accessories.`}
-          className="mb-6 sm:mb-8"
-        />
-        <ProductBrowser />
-      </Section>
+        {/* The shop itself — full catalogue with search, filters and sorting. */}
+        <SectionCard
+          id="shop"
+          icon="🛒"
+          title="All Products"
+          subtitle={`Search, filter and sort all ${products.length} products`}
+        >
+          <ProductBrowser />
+        </SectionCard>
+      </div>
     </>
   );
 }

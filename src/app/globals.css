@@ -4,7 +4,8 @@
    AgroSky design tokens
    Brand red (#a12d33) is taken from the existing agroskydroneaspirant.com
    stylesheet and expanded into a full ramp; gold (#f9a825) is the existing
-   secondary accent.
+   secondary accent. The app bar, category chips, prices, badges and CTAs all
+   read from `brand-*`, so the whole UI stays in one colour system.
    ========================================================================== */
 
 @theme {
@@ -39,15 +40,18 @@
   --color-surface: #ffffff;
   --color-surface-muted: #faf9fa;
   --color-surface-sunken: #f4f2f3;
+  /* The page itself sits on grey so the white section cards read as cards. */
+  --color-surface-app: #efedef;
 
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-share-tech), ui-monospace, SFMono-Regular, monospace;
 
-  --radius-card: 1.25rem;
+  --radius-card: 0.875rem;
 
   --shadow-soft: 0 1px 2px rgb(16 17 22 / 0.04), 0 8px 24px -12px rgb(16 17 22 / 0.12);
   --shadow-lift: 0 2px 4px rgb(16 17 22 / 0.04), 0 18px 40px -16px rgb(122 30 40 / 0.28);
   --shadow-glow: 0 24px 60px -24px rgb(161 45 51 / 0.55);
+  --shadow-card: 0 1px 3px rgb(16 17 22 / 0.06), 0 10px 30px -18px rgb(16 17 22 / 0.25);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -86,9 +90,10 @@
   }
 
   :root {
-    /* Sticky header height: announcement strip + main bar. Sticky toolbars
-       below the header offset themselves against this. */
-    --header-h: 6.25rem;
+    /* The app bar scrolls away rather than sticking, so sticky toolbars pin to
+       the top of the viewport. Kept as a token so a sticky bar can be
+       reintroduced by changing this one value. */
+    --header-h: 0px;
     /* Mobile tab bar, including the iOS home indicator. Anything pinned to the
        bottom of the viewport offsets itself against this so it never covers
        the bar; it collapses to 0 on desktop where the bar is hidden. */
@@ -97,20 +102,19 @@
 
   @media (width >= 64rem) {
     :root {
-      --header-h: 7.25rem;
       --bottom-nav-h: 0px;
     }
   }
 
   html {
     scroll-behavior: smooth;
-    /* Offset anchor scrolling for the sticky header. */
-    scroll-padding-top: calc(var(--header-h) + 0.5rem);
+    /* Leaves room for whatever toolbar is pinned when an anchor is targeted. */
+    scroll-padding-top: calc(var(--header-h) + 4.5rem);
     -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background-color: var(--color-surface);
+    background-color: var(--color-surface-app);
     color: var(--color-ink-800);
     font-family: var(--font-sans);
     /* Guards against any child forcing a horizontal scrollbar on mobile. */
@@ -191,6 +195,16 @@
     linear-gradient(160deg, var(--color-ink-950) 0%, var(--color-ink-900) 100%);
 }
 
+/** App bar / promo banner surface. */
+@utility gradient-app {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-brand-600) 0%,
+    var(--color-brand-700) 55%,
+    var(--color-brand-900) 100%
+  );
+}
+
 @utility text-gradient-brand {
   background-image: linear-gradient(
     100deg,
@@ -228,12 +242,6 @@
   );
   background-size: 220% 100%;
   animation: var(--animate-shimmer);
-}
-
-/** Enables child 3D transforms for product card tilt. */
-@utility perspective-card {
-  perspective: 1100px;
-  transform-style: preserve-3d;
 }
 
 /** Hides scrollbars on horizontal chip rails while keeping them scrollable. */

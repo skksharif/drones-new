@@ -17,10 +17,10 @@ export function ProductGrid({
   return (
     <div
       className={cn(
-        "grid grid-cols-2 gap-3 sm:gap-5",
-        columns === "wide"
-          ? "lg:grid-cols-3 xl:grid-cols-4"
-          : "lg:grid-cols-3 xl:grid-cols-4",
+        // Denser than a marketing grid on purpose: more of the catalogue is
+        // visible per screen, which is the point of a shop listing.
+        "grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3",
+        columns === "wide" ? "lg:grid-cols-4 xl:grid-cols-5" : "lg:grid-cols-4 xl:grid-cols-5",
         className,
       )}
     >

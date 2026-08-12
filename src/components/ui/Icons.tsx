@@ -27,6 +27,22 @@ export const CartIcon = (p: IconProps) => (
   </svg>
 );
 
+export const UserIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="8" r="3.6" />
+    <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
+  </svg>
+);
+
+export const SupportIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M4.5 14v-2a7.5 7.5 0 0 1 15 0v2" />
+    <rect x="2.5" y="13.5" width="4" height="6" rx="2" />
+    <rect x="17.5" y="13.5" width="4" height="6" rx="2" />
+    <path d="M19.5 19.5v.4a2.6 2.6 0 0 1-2.6 2.6H14" />
+  </svg>
+);
+
 export const HomeIcon = (p: IconProps) => (
   <svg {...base} {...p}>
     <path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z" />

@@ -67,7 +67,7 @@ export function SearchInput({
       <label htmlFor={id} className="sr-only">
         Search products
       </label>
-      <SearchIcon className="pointer-events-none absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-ink-400 transition-colors group-focus-within:text-brand-700" />
+      <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-400 transition-colors group-focus-within:text-brand-700" />
       <input
         id={id}
         type="search"
@@ -84,9 +84,9 @@ export function SearchInput({
         enterKeyHint="search"
         autoComplete="off"
         className={cn(
-          "h-12 w-full rounded-full border border-ink-200 bg-white pl-11.5 pr-11 text-sm text-ink-800",
+          "h-10 w-full rounded-xl border border-ink-200 bg-white pl-10.5 pr-10 text-[0.8125rem] text-ink-800",
           "outline-none transition-all duration-200 placeholder:text-ink-400",
-          "focus:border-brand-600/50 focus:ring-4 focus:ring-brand-600/10",
+          "focus:border-brand-600/50 focus:ring-2 focus:ring-brand-600/10",
           "[&::-webkit-search-cancel-button]:hidden",
         )}
       />

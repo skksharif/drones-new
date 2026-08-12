@@ -16,7 +16,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="container-page flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
+    <div className="container-page my-3.5 flex min-h-[60vh] flex-col items-center justify-center rounded-[var(--radius-card)] bg-white py-16 text-center shadow-[var(--shadow-card)]">
       <div className="flex size-16 items-center justify-center rounded-2xl gradient-brand-soft text-brand-700">
         <svg
           viewBox="0 0 24 24"

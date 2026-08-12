@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { SectionCard } from "@/components/ui/SectionCard";
 import { products } from "@/lib/products";
 import { itemListSchema, pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -27,19 +28,17 @@ export default function ProductsPage() {
         data={itemListSchema(products, { name: "All Products", path: "/products" })}
       />
 
-      <div className="border-b border-ink-100 bg-surface-muted">
-        <div className="container-page py-6 sm:py-10">
-          <Breadcrumbs crumbs={[{ name: "Products", path: "/products" }]} className="mb-4" />
-          <h1 className="text-2xl font-bold sm:text-3xl lg:text-4xl">All Products</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-500 sm:text-base">
-            Every drone, frame, motor, controller and nozzle we stock — {products.length} products in
-            total. Use the filters to narrow by category, price, availability or type.
-          </p>
-        </div>
-      </div>
+      <div className="container-page space-y-2.5 py-2.5 sm:py-3">
+        <Breadcrumbs crumbs={[{ name: "Products", path: "/products" }]} />
 
-      <div className="container-page py-8 sm:py-10 lg:py-12">
-        <ProductBrowser />
+        <SectionCard
+          as="h1"
+          icon="🛒"
+          title="All Products"
+          subtitle={`Every drone, frame, motor, controller and nozzle we stock — ${products.length} products in total. Use the filters to narrow by category, price, availability or type.`}
+        >
+          <ProductBrowser />
+        </SectionCard>
       </div>
     </>
   );

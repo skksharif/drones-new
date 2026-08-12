@@ -42,7 +42,7 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <>
+    <div className="bg-white">
       <div className="border-b border-ink-100 bg-surface-muted">
         <div className="container-page py-6 sm:py-10">
           <Breadcrumbs crumbs={[{ name: "About", path: "/about" }]} className="mb-4" />
@@ -185,6 +185,6 @@ export default function AboutPage() {
           ))}
         </div>
       </Section>
-    </>
+    </div>
   );
 }

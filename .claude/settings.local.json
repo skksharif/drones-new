@@ -12,7 +12,9 @@
       "Bash(npx tsc *)",
       "Bash(npx next *)",
       "Bash(npx eslint *)",
-      "Bash(grep -o \"\\\\.size-5\\\\\\\\\\\\\\\\.5{[^}]*}\" .next/static/chunks/*.css)"
+      "Bash(grep -o \"\\\\.size-5\\\\\\\\\\\\\\\\.5{[^}]*}\" .next/static/chunks/*.css)",
+      "Bash(rm -f src/components/product/ProductRail.tsx)",
+      "Bash(python -)"
     ]
   }
 }

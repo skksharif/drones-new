@@ -833,6 +833,46 @@ export const priceBounds = (() => {
   return { min: Math.min(...priced), max: Math.max(...priced) };
 })();
 
+/**
+ * Slugs of the most recently added products. Cards badge these NEW — a date
+ * cutoff would silently empty itself as the catalogue ages.
+ */
+export const newArrivalSlugs = new Set(
+  [...products]
+    .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
+    .slice(0, 6)
+    .map((product) => product.slug),
+);
+
+/** Saving against the struck-through price, rounded, or null when not on offer. */
+export function discountPercent(product: Product): number | null {
+  if (product.price === null || !product.compareAtPrice) return null;
+  const percent = Math.round((1 - product.price / product.compareAtPrice) * 100);
+  return percent > 0 ? percent : null;
+}
+
+/**
+ * The "Hot Deals" pool. Genuinely discounted products lead, ranked by saving;
+ * bestsellers and featured stock fill the rest so the rail is never empty just
+ * because nothing happens to be on offer this week.
+ */
+export function getDeals(limit = 10): Product[] {
+  const discounted = products
+    .filter((product) => discountPercent(product) !== null)
+    .sort((a, b) => (discountPercent(b) ?? 0) - (discountPercent(a) ?? 0));
+
+  const rest = products
+    .filter(
+      (product) =>
+        discountPercent(product) === null &&
+        product.price !== null &&
+        (product.bestseller || product.featured),
+    )
+    .sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+
+  return [...discounted, ...rest].slice(0, limit);
+}
+
 export function countByCategory(categorySlug: string): number {
   return products.filter((p) => p.category === categorySlug).length;
 }

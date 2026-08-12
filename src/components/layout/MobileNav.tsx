@@ -90,22 +90,14 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
         )}
       >
         <div className="flex items-center justify-between border-b border-ink-100 px-5 py-4">
-          <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
+          <Link href="/" onClick={onClose} className="flex items-center">
             <Image
               src="/images/brand/logo.png"
-              alt=""
-              width={36}
-              height={36}
-              className="size-9 rounded-lg object-contain"
+              alt={siteConfig.name}
+              width={1280}
+              height={853}
+              className="h-10 w-auto rounded-md"
             />
-            <span className="flex flex-col leading-none">
-              <span className="text-base font-bold tracking-tight">
-                Agro<span className="text-brand-700">Sky</span>
-              </span>
-              <span className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-ink-400">
-                {siteConfig.wordmark}
-              </span>
-            </span>
           </Link>
           <button
             ref={closeRef}
@@ -137,7 +129,11 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
           </form>
 
           <nav className="px-3 pt-4" aria-label="Mobile">
-            {[...NAV_LINKS, { href: "/orders", label: "My orders" } as const].map((link) => {
+            {[
+              ...NAV_LINKS,
+              { href: "/categories", label: "Categories" } as const,
+              { href: "/cart", label: "My cart" } as const,
+            ].map((link) => {
               const active =
                 link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               return (

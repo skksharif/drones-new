@@ -39,18 +39,15 @@ export function AddToCartButton({
         disabled={!purchasable}
         aria-label={`Add ${product.name} to cart`}
         className={cn(
-          // 40px keeps the tap target comfortable on a phone without crowding
-          // the price beside it.
-          "relative z-20 flex size-10 shrink-0 items-center justify-center rounded-full",
-          "gradient-brand text-white shadow-[var(--shadow-soft)]",
-          "transition-transform duration-200 ease-[var(--ease-out-soft)]",
-          "motion-safe:hover:scale-110 motion-safe:active:scale-90",
+          "relative z-20 flex size-8 shrink-0 items-center justify-center rounded-full",
+          "gradient-brand text-white",
+          "transition-transform duration-150 motion-safe:active:scale-90",
           "disabled:pointer-events-none disabled:opacity-40",
           pressed && "motion-safe:scale-90",
           className,
         )}
       >
-        {justAdded ? <CheckIcon className="size-4.5" /> : <PlusIcon className="size-4.5" />}
+        {justAdded ? <CheckIcon className="size-4" /> : <PlusIcon className="size-4" />}
       </button>
     );
   }

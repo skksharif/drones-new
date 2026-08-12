@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AddToCartButton } from "./AddToCartButton";
 import { StockBadge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import {
   CheckIcon,
   MinusIcon,
@@ -23,17 +21,10 @@ import { useCart } from "@/store/cart";
 
 export function PurchasePanel({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
-  const { add, qtyOf, ready } = useCart();
-  const router = useRouter();
+  const { qtyOf, ready } = useCart();
   const inCart = ready ? qtyOf(product.slug) : 0;
   const enquiryOnly = product.price === null;
   const purchasable = isPurchasable(product.availability) && !enquiryOnly;
-
-  /** Straight to checkout — the cart is still the source of truth on the way. */
-  const buyNow = () => {
-    add(product.slug, qty);
-    router.push("/checkout");
-  };
 
   const enquiryMessage = whatsappLink(
     `Hi ${siteConfig.name}, I'd like details and a quote for: ${product.name} (${siteConfig.url}/products/${product.slug}).`,
@@ -55,7 +46,7 @@ export function PurchasePanel({ product }: { product: Product }) {
       <p className="text-xs text-ink-400">
         {enquiryOnly
           ? "Configuration-dependent — share your requirement and we'll quote."
-          : "Inclusive of applicable taxes. Shipping calculated at checkout."}
+          : "Listed price inclusive of applicable taxes. Freight confirmed on enquiry."}
       </p>
 
       <StockBadge availability={product.availability} long />
@@ -91,10 +82,6 @@ export function PurchasePanel({ product }: { product: Product }) {
           </div>
 
           <AddToCartButton product={product} qty={qty} className="flex-1 min-w-45" />
-
-          <Button variant="secondary" size="lg" fullWidth onClick={buyNow}>
-            Buy now
-          </Button>
         </div>
       ) : null}
 
