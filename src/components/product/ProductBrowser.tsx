@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ProductGrid } from "./ProductGrid";
 import { ActiveFilterChips } from "@/components/filters/ActiveFilterChips";
 import { BottomSheet } from "@/components/filters/BottomSheet";
@@ -11,7 +11,6 @@ import { SortOptionList, SortSelect } from "@/components/filters/SortSelect";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { FilterIcon, SearchIcon, SortIcon } from "@/components/ui/Icons";
-import { ProductGridSkeleton } from "@/components/ui/Skeleton";
 import { useProductFilters } from "@/hooks/useProductFilters";
 import { SORT_OPTIONS, activeFilterCount, filterProducts, isDefaultFilters } from "@/lib/filters";
 import { products as allProducts } from "@/lib/products";
@@ -24,6 +23,7 @@ export function ProductBrowser({
   showSearch = true,
   searchAutoFocus = false,
   emptyHint,
+  className,
 }: {
   /** Product pool to filter within — a category page passes its own subset. */
   source?: Product[];
@@ -32,6 +32,7 @@ export function ProductBrowser({
   showSearch?: boolean;
   searchAutoFocus?: boolean;
   emptyHint?: string;
+  className?: string;
 }) {
   const {
     filters,
@@ -49,18 +50,10 @@ export function ProductBrowser({
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
 
-  // One short skeleton pass on mount avoids a jarring pop-in and gives the
-  // client-side filter state time to read the URL.
-  const [booting, setBooting] = useState(true);
-  useEffect(() => {
-    const timer = window.setTimeout(() => setBooting(false), 220);
-    return () => window.clearTimeout(timer);
-  }, []);
+  const closeFilters = useCallback(() => setFiltersOpen(false), []);
+  const closeSort = useCallback(() => setSortOpen(false), []);
 
-  const { items, total } = useMemo(
-    () => filterProducts(filters, source),
-    [filters, source],
-  );
+  const { items, total } = useMemo(() => filterProducts(filters, source), [filters, source]);
 
   const filterCount = activeFilterCount(filters) - (lockedCategory ? 1 : 0);
   const hasFilters = !isDefaultFilters(filters);
@@ -75,13 +68,24 @@ export function ProductBrowser({
     onPriceChange: setPriceRange,
     onFeaturedChange: setFeaturedOnly,
     hideCategories: Boolean(lockedCategory),
+    source,
   };
 
+  const clearAllAndClose = useCallback(() => {
+    clearAll();
+    setFiltersOpen(false);
+  }, [clearAll]);
+
   return (
-    <div className="lg:grid lg:grid-cols-[16.5rem_1fr] lg:gap-10 xl:grid-cols-[18rem_1fr]">
+    <div
+      className={cn(
+        "lg:grid lg:grid-cols-[16.5rem_1fr] lg:items-start lg:gap-10 xl:grid-cols-[18rem_1fr]",
+        className,
+      )}
+    >
       {/* Desktop sidebar */}
       <aside className="hidden lg:block" aria-label="Product filters">
-        <div className="sticky top-32 max-h-[calc(100dvh-9rem)] overflow-y-auto overscroll-contain pb-8 pr-2">
+        <div className="sticky top-[calc(var(--header-h)+1.5rem)] max-h-[calc(100dvh-var(--header-h)-3rem)] overflow-y-auto overscroll-contain pb-8 pr-2">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-sm font-semibold">Filters</h2>
             {hasFilters ? (
@@ -99,88 +103,79 @@ export function ProductBrowser({
       </aside>
 
       <div className="min-w-0">
-        {/* Search + sort toolbar */}
-        {showSearch ? (
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <SearchInput
-              value={filters.q}
-              onChange={setQuery}
-              autoFocus={searchAutoFocus}
-              className="flex-1"
-              placeholder="Search drones, frames, motors, nozzles…"
-            />
+        {/* Toolbar — sticks under the header so filters and sort are always a
+            thumb away, however far the grid has been scrolled. */}
+        <div className="sticky top-[var(--header-h)] z-30 -mx-4 mb-4 border-b border-ink-100 bg-white/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {showSearch ? (
+              <SearchInput
+                value={filters.q}
+                onChange={setQuery}
+                autoFocus={searchAutoFocus}
+                className="min-w-0 flex-1"
+                placeholder="Search drones, frames, motors, nozzles…"
+              />
+            ) : (
+              <div className="flex-1" />
+            )}
+
+            {/* Compact icon controls — phones only */}
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              aria-label={filterCount > 0 ? `Filters, ${filterCount} active` : "Filters"}
+              className="relative flex size-12 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 tap-highlight-none transition-colors active:bg-ink-100 sm:hidden"
+            >
+              <FilterIcon className="size-5" />
+              {filterCount > 0 ? (
+                <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full gradient-brand text-[0.625rem] font-bold text-white ring-2 ring-white">
+                  {filterCount}
+                </span>
+              ) : null}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSortOpen(true)}
+              aria-label={`Sort products, currently ${activeSortLabel}`}
+              className="flex size-12 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 tap-highlight-none transition-colors active:bg-ink-100 sm:hidden"
+            >
+              <SortIcon className="size-5" />
+            </button>
+
+            {/* Tablet: full filter button + native sort select */}
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              className="hidden h-12 shrink-0 items-center gap-2 rounded-full border border-ink-200 bg-white px-5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-700/40 sm:flex lg:hidden"
+            >
+              <FilterIcon className="size-4.5" />
+              Filters
+              {filterCount > 0 ? (
+                <span className="flex size-5 items-center justify-center rounded-full gradient-brand text-[0.625rem] font-bold text-white">
+                  {filterCount}
+                </span>
+              ) : null}
+            </button>
             <SortSelect
               value={filters.sort}
               onChange={setSort}
-              className="hidden sm:block sm:w-56"
+              className="hidden w-52 shrink-0 sm:block"
             />
           </div>
-        ) : (
-          <div className="mb-4 hidden justify-end sm:flex">
-            <SortSelect value={filters.sort} onChange={setSort} className="w-56" />
-          </div>
-        )}
-
-        {/* Mobile filter + sort bar */}
-        <div className="mb-4 grid grid-cols-2 gap-2.5 sm:hidden">
-          <button
-            type="button"
-            onClick={() => setFiltersOpen(true)}
-            className="flex h-11 items-center justify-center gap-2 rounded-full border border-ink-200 bg-white text-sm font-medium text-ink-700 transition-colors active:bg-ink-100"
-          >
-            <FilterIcon className="size-4.5" />
-            Filters
-            {filterCount > 0 ? (
-              <span className="flex size-5 items-center justify-center rounded-full gradient-brand text-[0.625rem] font-bold text-white">
-                {filterCount}
-              </span>
-            ) : null}
-          </button>
-          <button
-            type="button"
-            onClick={() => setSortOpen(true)}
-            className="flex h-11 items-center justify-center gap-2 rounded-full border border-ink-200 bg-white text-sm font-medium text-ink-700 transition-colors active:bg-ink-100"
-          >
-            <SortIcon className="size-4.5" />
-            Sort
-          </button>
-        </div>
-
-        {/* Tablet filter button */}
-        <div className="mb-4 hidden sm:flex lg:hidden">
-          <button
-            type="button"
-            onClick={() => setFiltersOpen(true)}
-            className="flex h-11 items-center gap-2 rounded-full border border-ink-200 bg-white px-5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-700/40"
-          >
-            <FilterIcon className="size-4.5" />
-            Filters
-            {filterCount > 0 ? (
-              <span className="flex size-5 items-center justify-center rounded-full gradient-brand text-[0.625rem] font-bold text-white">
-                {filterCount}
-              </span>
-            ) : null}
-          </button>
         </div>
 
         {/* Result count + active chips */}
         <div className="mb-5 space-y-3">
           <p className="text-sm text-ink-500" role="status" aria-live="polite">
-            {booting ? (
-              <span className="inline-block h-4 w-32 rounded skeleton align-middle" />
-            ) : (
+            <span className="font-semibold text-ink-900">{total}</span>{" "}
+            {total === 1 ? "product" : "products"}
+            {filters.q.trim() ? (
               <>
-                <span className="font-semibold text-ink-900">{total}</span>{" "}
-                {total === 1 ? "product" : "products"}
-                {filters.q.trim() ? (
-                  <>
-                    {" "}
-                    for <span className="font-medium text-ink-800">“{filters.q.trim()}”</span>
-                  </>
-                ) : null}
-                <span className="hidden sm:inline"> · sorted by {activeSortLabel}</span>
+                {" "}
+                for <span className="font-medium text-ink-800">“{filters.q.trim()}”</span>
               </>
-            )}
+            ) : null}
+            <span className="hidden sm:inline"> · sorted by {activeSortLabel}</span>
           </p>
 
           <ActiveFilterChips
@@ -198,14 +193,14 @@ export function ProductBrowser({
         </div>
 
         {/* Results */}
-        {booting ? (
-          <ProductGridSkeleton count={8} />
-        ) : items.length > 0 ? (
+        {items.length > 0 ? (
           <ProductGrid products={items} priorityCount={2} />
         ) : (
           <EmptyState
             icon={<SearchIcon className="size-6" />}
-            title={filters.q.trim() ? "No products match your search" : "No products match these filters"}
+            title={
+              filters.q.trim() ? "No products match your search" : "No products match these filters"
+            }
             description={
               emptyHint ??
               "Try a different keyword, widen the price range, or clear a filter or two. If you're after a specific part we don't list, message us on WhatsApp — we can usually source it."
@@ -230,32 +225,25 @@ export function ProductBrowser({
       {/* Mobile / tablet sheets */}
       <BottomSheet
         open={filtersOpen}
-        onClose={() => setFiltersOpen(false)}
+        onClose={closeFilters}
         title="Filters"
         footer={
           <div className="flex gap-3">
-            <Button
-              variant="outline"
-              fullWidth
-              onClick={() => {
-                clearAll();
-                setFiltersOpen(false);
-              }}
-            >
+            <Button variant="outline" fullWidth onClick={clearAllAndClose}>
               Clear all
             </Button>
-            <Button fullWidth onClick={() => setFiltersOpen(false)}>
+            <Button fullWidth onClick={closeFilters}>
               Show {total} {total === 1 ? "result" : "results"}
             </Button>
           </div>
         }
       >
-        <div className={cn("pt-2", "pb-2")}>
+        <div className="py-2">
           <FilterPanel {...panelProps} />
         </div>
       </BottomSheet>
 
-      <BottomSheet open={sortOpen} onClose={() => setSortOpen(false)} title="Sort by">
+      <BottomSheet open={sortOpen} onClose={closeSort} title="Sort by">
         <div className="pt-2">
           <SortOptionList
             value={filters.sort}

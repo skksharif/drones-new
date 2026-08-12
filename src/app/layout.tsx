@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
+import { CartToast } from "@/components/cart/CartToast";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageTransition } from "@/components/layout/PageTransition";
@@ -111,7 +113,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Warm up the image/font origin before the hero paints. */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
-      <body className="flex min-h-full flex-col bg-surface">
+      {/* The padding keeps the footer clear of the fixed mobile tab bar; the
+          token is 0 on desktop where that bar is hidden. */}
+      <body className="flex min-h-full flex-col bg-surface pb-[var(--bottom-nav-h)]">
         <JsonLd id="ld-organization" data={organizationSchema()} />
         <JsonLd id="ld-website" data={websiteSchema()} />
         <JsonLd id="ld-store" data={localBusinessSchema()} />
@@ -123,6 +127,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <WhatsAppFab />
+          <CartToast />
+          <BottomNav />
         </CartProvider>
       </body>
     </html>

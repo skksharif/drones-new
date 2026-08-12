@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Button, ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
+import { TotalsList } from "@/components/checkout/TotalsList";
+import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import {
   CartIcon,
@@ -16,8 +17,10 @@ import {
 } from "@/components/ui/Icons";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { categoryName } from "@/lib/categories";
+import { FREE_SHIPPING_OVER, amountToFreeShipping, computeTotals } from "@/lib/checkout";
 import { formatPrice } from "@/lib/format";
 import { siteConfig, whatsappLink } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import { useCart, type ResolvedLine } from "@/store/cart";
 
 export function CartView() {
@@ -45,6 +48,8 @@ export function CartView() {
       />
     );
   }
+
+  const totals = computeTotals(subtotal);
 
   const quoteMessage = whatsappLink(
     `Hi ${siteConfig.name}, I'd like to order:\n\n${lines
@@ -90,40 +95,26 @@ export function CartView() {
       </div>
 
       {/* Summary */}
-      <aside className="mt-8 lg:sticky lg:top-32 lg:mt-0">
+      <aside className="mt-8 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:mt-0">
         <div className="rounded-[var(--radius-card)] border border-ink-200/70 bg-white p-5 shadow-[var(--shadow-soft)] sm:p-6">
           <h2 className="text-base font-semibold">Order summary</h2>
 
-          <dl className="mt-5 space-y-3 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-ink-500">Subtotal</dt>
-              <dd className="font-semibold text-ink-900">{formatPrice(subtotal)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-ink-500">Shipping</dt>
-              <dd className="text-ink-500">Calculated at checkout</dd>
-            </div>
-            {enquiryCount > 0 ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-ink-500">Quote items</dt>
-                <dd className="text-right text-xs text-ink-500">
-                  {enquiryCount} item{enquiryCount === 1 ? "" : "s"} priced on enquiry
-                </dd>
-              </div>
-            ) : null}
-          </dl>
+          <FreeShippingMeter subtotal={subtotal} className="mt-4" />
 
-          <div className="mt-5 flex items-end justify-between border-t border-ink-100 pt-5">
-            <span className="text-sm font-semibold">Total</span>
-            <span className="text-2xl font-bold tracking-tight">{formatPrice(subtotal)}</span>
-          </div>
+          <TotalsList totals={totals} className="mt-5" />
 
-          <Button fullWidth size="lg" className="mt-5" disabled>
+          {enquiryCount > 0 ? (
+            <p className="mt-3 rounded-xl bg-surface-muted p-3 text-xs leading-relaxed text-ink-500">
+              {enquiryCount} item{enquiryCount === 1 ? " is" : "s are"} priced on enquiry and
+              isn&apos;t included in the total — we&apos;ll quote{" "}
+              {enquiryCount === 1 ? "it" : "them"} when we confirm your order.
+            </p>
+          ) : null}
+
+          <ButtonLink href="/checkout" fullWidth size="lg" className="mt-5">
             Proceed to checkout
-          </Button>
-          <p className="mt-2 text-center text-xs text-ink-400">
-            Online checkout is coming soon — confirm your order on WhatsApp or by phone.
-          </p>
+            <ChevronRight className="size-4" />
+          </ButtonLink>
 
           <ExternalButtonLink
             href={quoteMessage}
@@ -132,7 +123,7 @@ export function CartView() {
             className="mt-3"
           >
             <WhatsAppIcon className="size-4.5" />
-            Confirm order on WhatsApp
+            Order on WhatsApp instead
           </ExternalButtonLink>
 
           <ul className="mt-6 space-y-3 border-t border-ink-100 pt-5">
@@ -147,6 +138,60 @@ export function CartView() {
           </ul>
         </div>
       </aside>
+
+      {/* Phone checkout bar — the summary card is a long scroll away on mobile,
+          so the total and the CTA follow the user up the page. It sits above the
+          bottom tab bar rather than covering it. */}
+      <div className="fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-40 border-t border-ink-100 bg-white/95 px-4 py-3 shadow-[0_-6px_20px_-12px_rgb(16_17_22/0.3)] backdrop-blur-md lg:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0">
+            <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-ink-400">
+              Total
+            </p>
+            <p className="truncate text-lg font-bold leading-tight">
+              {formatPrice(totals.total)}
+            </p>
+          </div>
+          <ButtonLink href="/checkout" className="ml-auto flex-1 max-w-56" size="md">
+            Checkout
+            <ChevronRight className="size-4" />
+          </ButtonLink>
+        </div>
+      </div>
+      {/* Spacer so the last row is never hidden behind that bar. */}
+      <div className="h-20 lg:hidden" aria-hidden />
+    </div>
+  );
+}
+
+function FreeShippingMeter({ subtotal, className }: { subtotal: number; className?: string }) {
+  const remaining = amountToFreeShipping(subtotal);
+  const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_OVER) * 100));
+
+  return (
+    <div className={className}>
+      <p className="text-xs leading-relaxed text-ink-600">
+        {remaining === 0 ? (
+          <>
+            <span className="font-semibold text-emerald-600">Free shipping unlocked</span> on this
+            order.
+          </>
+        ) : (
+          <>
+            Add <span className="font-semibold text-ink-900">{formatPrice(remaining)}</span> more
+            for free shipping.
+          </>
+        )}
+      </p>
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-ink-100">
+        <div
+          className={cn(
+            "h-full rounded-full transition-all duration-500",
+            remaining === 0 ? "bg-emerald-500" : "gradient-brand",
+          )}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
     </div>
   );
 }

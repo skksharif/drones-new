@@ -39,7 +39,9 @@ export function AddToCartButton({
         disabled={!purchasable}
         aria-label={`Add ${product.name} to cart`}
         className={cn(
-          "relative z-20 flex size-9 shrink-0 items-center justify-center rounded-full",
+          // 40px keeps the tap target comfortable on a phone without crowding
+          // the price beside it.
+          "relative z-20 flex size-10 shrink-0 items-center justify-center rounded-full",
           "gradient-brand text-white shadow-[var(--shadow-soft)]",
           "transition-transform duration-200 ease-[var(--ease-out-soft)]",
           "motion-safe:hover:scale-110 motion-safe:active:scale-90",

@@ -66,6 +66,11 @@
   50% { transform: translate3d(0, -14px, 0); }
 }
 
+@keyframes toastIn {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.98); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
 @keyframes marquee {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(-50%, 0, 0); }
@@ -80,10 +85,27 @@
     min-width: 0;
   }
 
+  :root {
+    /* Sticky header height: announcement strip + main bar. Sticky toolbars
+       below the header offset themselves against this. */
+    --header-h: 6.25rem;
+    /* Mobile tab bar, including the iOS home indicator. Anything pinned to the
+       bottom of the viewport offsets itself against this so it never covers
+       the bar; it collapses to 0 on desktop where the bar is hidden. */
+    --bottom-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (width >= 64rem) {
+    :root {
+      --header-h: 7.25rem;
+      --bottom-nav-h: 0px;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
     /* Offset anchor scrolling for the sticky header. */
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: calc(var(--header-h) + 0.5rem);
     -webkit-text-size-adjust: 100%;
   }
 

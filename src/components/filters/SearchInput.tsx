@@ -2,12 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CloseIcon, SearchIcon } from "@/components/ui/Icons";
-import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
 
 /**
- * Search field that keeps typing instant but only pushes to the URL after the
+ * Search field that keeps typing instant but only pushes outward after the
  * user pauses, so filtering doesn't thrash on every keystroke.
+ *
+ * `echo` records the last value this input emitted. When the parent comes back
+ * with something else — "Clear all", a back navigation — that's an external
+ * reset and the field adopts it; when it comes back with our own value we keep
+ * whatever the user has typed since.
  */
 export function SearchInput({
   value,
@@ -15,6 +19,7 @@ export function SearchInput({
   placeholder = "Search products…",
   className,
   autoFocus = false,
+  delay = 260,
   id = "product-search",
 }: {
   value: string;
@@ -22,25 +27,40 @@ export function SearchInput({
   placeholder?: string;
   className?: string;
   autoFocus?: boolean;
+  delay?: number;
   id?: string;
 }) {
-  const [local, setLocal] = useState(value);
-  const debounced = useDebounce(local, 280);
-  const lastPushed = useRef(value);
+  const [text, setText] = useState(value);
+  const [echo, setEcho] = useState(value);
+  const timer = useRef<number | null>(null);
 
-  // Push debounced input outward.
-  useEffect(() => {
-    if (debounced === lastPushed.current) return;
-    lastPushed.current = debounced;
-    onChange(debounced);
-  }, [debounced, onChange]);
+  if (echo !== value) {
+    setEcho(value);
+    setText(value);
+  }
 
-  // Accept external resets (e.g. "Clear all filters").
-  useEffect(() => {
-    if (value === lastPushed.current) return;
-    lastPushed.current = value;
-    setLocal(value);
-  }, [value]);
+  useEffect(
+    () => () => {
+      if (timer.current !== null) window.clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  const push = (next: string) => {
+    if (timer.current !== null) window.clearTimeout(timer.current);
+    timer.current = null;
+    setEcho(next);
+    onChange(next);
+  };
+
+  const handleChange = (next: string) => {
+    setText(next);
+    if (timer.current !== null) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => {
+      timer.current = null;
+      push(next);
+    }, delay);
+  };
 
   return (
     <div className={cn("group relative", className)}>
@@ -51,9 +71,15 @@ export function SearchInput({
       <input
         id={id}
         type="search"
-        value={local}
+        value={text}
         autoFocus={autoFocus}
-        onChange={(event) => setLocal(event.target.value)}
+        onChange={(event) => handleChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            push(text);
+          }
+        }}
         placeholder={placeholder}
         enterKeyHint="search"
         autoComplete="off"
@@ -64,12 +90,15 @@ export function SearchInput({
           "[&::-webkit-search-cancel-button]:hidden",
         )}
       />
-      {local ? (
+      {text ? (
         <button
           type="button"
-          onClick={() => setLocal("")}
+          onClick={() => {
+            setText("");
+            push("");
+          }}
           aria-label="Clear search"
-          className="absolute right-3 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700"
+          className="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700"
         >
           <CloseIcon className="size-4" />
         </button>

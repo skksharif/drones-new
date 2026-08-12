@@ -226,6 +226,13 @@ export function Header() {
             {/* Actions */}
             <div className="ml-auto flex items-center gap-1 lg:ml-0">
               <Link
+                href="/orders"
+                className="hidden rounded-full px-3 py-2 text-sm font-medium text-ink-600 transition-colors hover:text-ink-900 lg:block"
+              >
+                Orders
+              </Link>
+
+              <Link
                 href="/search"
                 aria-label="Search products"
                 className="flex size-10 items-center justify-center rounded-full text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink-900 lg:hidden"

@@ -1,13 +1,16 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
+import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ProductGridSkeleton } from "@/components/ui/Skeleton";
 import { categories, getCategory } from "@/lib/categories";
 import { getProductsByCategory } from "@/lib/products";
 import { categoryMetadata, itemListSchema } from "@/lib/seo";
+
+/** Sort weight for the category highlight slider. */
+function rank(product: { bestseller?: boolean; featured?: boolean }): number {
+  return (product.bestseller ? 2 : 0) + (product.featured ? 1 : 0);
+}
 
 export function generateStaticParams() {
   return categories.map((category) => ({ slug: category.slug }));
@@ -26,6 +29,11 @@ export default async function CategoryPage({ params }: PageProps<"/category/[slu
   if (!category) notFound();
 
   const items = getProductsByCategory(slug);
+  // Featured and bestselling items first, so the slider leads with the strongest
+  // products before the filterable grid repeats the full list.
+  const highlights = [...items]
+    .sort((a, b) => rank(b) - rank(a))
+    .slice(0, 10);
 
   return (
     <>
@@ -34,53 +42,50 @@ export default async function CategoryPage({ params }: PageProps<"/category/[slu
         data={itemListSchema(items, { name: category.name, path: `/category/${slug}` })}
       />
 
-      {/* Category banner */}
-      <div className="relative overflow-hidden border-b border-ink-100">
-        <div className="absolute inset-0" aria-hidden>
-          <Image
-            src={category.image}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-r from-ink-950/92 via-ink-950/78 to-ink-950/45" />
-        </div>
-
-        <div className="container-page relative py-8 sm:py-12 lg:py-14">
+      {/* Compact text header — the products below are the page, not a banner. */}
+      <div className="border-b border-ink-100 bg-surface-muted">
+        <div className="container-page py-5 sm:py-8">
           <Breadcrumbs
-            tone="dark"
             crumbs={[
               { name: "Products", path: "/products" },
               { name: category.name, path: `/category/${slug}` },
             ]}
-            className="mb-4"
+            className="mb-3"
           />
-          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-brand-300">
+          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-brand-700">
             {category.group === "drone" ? "Complete drones" : "Parts & accessories"}
           </p>
-          <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
-            {category.name}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-300 sm:text-base">
+          <h1 className="mt-1.5 text-2xl font-bold sm:text-3xl lg:text-4xl">{category.name}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-500 sm:text-base">
             {category.description}
           </p>
-          <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-ink-400">
+          <p className="mt-3 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-ink-400">
             {items.length} {items.length === 1 ? "product" : "products"} ·{" "}
             {category.types.join(" · ")}
           </p>
         </div>
       </div>
 
-      <div className="container-page py-8 sm:py-10 lg:py-12">
-        <Suspense fallback={<ProductGridSkeleton count={6} />}>
-          <ProductBrowser
-            source={items}
-            lockedCategory={slug}
-            emptyHint={`No ${category.name.toLowerCase()} match these filters. Try widening the price range or clearing the availability filter.`}
+      {/* Top picks in this category, as a slider. */}
+      {highlights.length > 3 ? (
+        <div className="container-page pt-7 sm:pt-9">
+          <h2 className="mb-4 text-base font-semibold sm:text-lg">
+            Popular in {category.name.toLowerCase()}
+          </h2>
+          <ProductCarousel
+            products={highlights}
+            priorityCount={2}
+            ariaLabel={`Popular ${category.name}`}
           />
-        </Suspense>
+        </div>
+      ) : null}
+
+      <div className="container-page py-8 sm:py-10 lg:py-12">
+        <ProductBrowser
+          source={items}
+          lockedCategory={slug}
+          emptyHint={`No ${category.name.toLowerCase()} match these filters. Try widening the price range or clearing the availability filter.`}
+        />
       </div>
     </>
   );

@@ -59,10 +59,12 @@ export function isDefaultFilters(f: FilterState): boolean {
   );
 }
 
-/** Number of active filter facets, used for the mobile filter badge. */
+/**
+ * Number of active facets shown on the "Filters" badge. The search term is
+ * deliberately excluded — it lives in its own field, not in the filter panel.
+ */
 export function activeFilterCount(f: FilterState): number {
   let n = 0;
-  if (f.q.trim()) n += 1;
   n += f.categories.length + f.types.length + f.groups.length + f.availability.length;
   if (f.minPrice !== defaultFilters.minPrice || f.maxPrice !== defaultFilters.maxPrice) n += 1;
   if (f.featuredOnly) n += 1;

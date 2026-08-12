@@ -16,11 +16,15 @@ export function PageTransition({ children }: { children: ReactNode }) {
       {children}
       <style>{`
         .page-enter {
-          animation: pageEnter 420ms var(--ease-out-soft) both;
+          animation: pageEnter 320ms var(--ease-out-soft) both;
         }
+        /* Opacity only — a transform here would make this wrapper the
+           containing block for every position: fixed descendant, which sends
+           the filter/sort sheets to the bottom of the document instead of the
+           viewport. */
         @keyframes pageEnter {
-          from { opacity: 0; transform: translate3d(0, 8px, 0); }
-          to { opacity: 1; transform: translate3d(0, 0, 0); }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `}</style>
     </div>

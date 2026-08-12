@@ -137,7 +137,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
           </form>
 
           <nav className="px-3 pt-4" aria-label="Mobile">
-            {NAV_LINKS.map((link) => {
+            {[...NAV_LINKS, { href: "/orders", label: "My orders" } as const].map((link) => {
               const active =
                 link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               return (

@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ProductGridSkeleton } from "@/components/ui/Skeleton";
 import { products } from "@/lib/products";
 import { itemListSchema, pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -41,9 +39,7 @@ export default function ProductsPage() {
       </div>
 
       <div className="container-page py-8 sm:py-10 lg:py-12">
-        <Suspense fallback={<ProductGridSkeleton count={8} />}>
-          <ProductBrowser />
-        </Suspense>
+        <ProductBrowser />
       </div>
     </>
   );

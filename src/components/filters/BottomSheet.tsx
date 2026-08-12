@@ -25,13 +25,21 @@ export function BottomSheet({
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const restoreRef = useRef<HTMLElement | null>(null);
 
   useLockBodyScroll(open);
 
+  // Focus management keys off `open` alone — a re-rendered `onClose` must not
+  // re-run it, or focus would jump back to the trigger mid-interaction.
   useEffect(() => {
     if (!open) return;
+    restoreRef.current = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
+    return () => restoreRef.current?.focus?.();
+  }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
@@ -41,8 +49,10 @@ export function BottomSheet({
 
   return (
     <div
+      // `inert` while closed keeps the off-screen controls out of the tab order
+      // and away from screen readers.
+      inert={!open}
       className={cn("fixed inset-0 z-80 lg:hidden", !open && "pointer-events-none")}
-      aria-hidden={!open}
     >
       <div
         onClick={onClose}

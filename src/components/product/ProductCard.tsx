@@ -154,7 +154,7 @@ export function ProductCard({
                 rel="noopener noreferrer"
                 onClick={(event) => event.stopPropagation()}
                 aria-label={`Enquire about ${product.name} on WhatsApp`}
-                className="relative z-20 flex size-9 shrink-0 items-center justify-center rounded-full bg-[#25d366] text-white transition-transform motion-safe:hover:scale-110 motion-safe:active:scale-95"
+                className="relative z-20 flex size-10 shrink-0 items-center justify-center rounded-full bg-[#25d366] text-white transition-transform motion-safe:hover:scale-110 motion-safe:active:scale-95"
               >
                 <WhatsAppIcon className="size-4.5" />
               </a>
