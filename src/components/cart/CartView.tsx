@@ -16,10 +16,10 @@ import {
   WhatsAppIcon,
 } from "@/components/ui/Icons";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { categoryName } from "@/lib/categories";
 import { formatPrice } from "@/lib/format";
 import { siteConfig, whatsappLink } from "@/lib/site";
 import { useCart, type ResolvedLine } from "@/store/cart";
+import { useCatalogue } from "@/store/catalogue";
 
 /**
  * The cart is a shortlist, not an order. Nothing is charged here and there is
@@ -189,6 +189,7 @@ function CartRow({
   onQty: (qty: number) => void;
   onRemove: () => void;
 }) {
+  const { categoryName } = useCatalogue();
   const { product, qty, lineTotal } = line;
 
   return (

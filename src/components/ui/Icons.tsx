@@ -205,3 +205,122 @@ export const LinkedInIcon = (p: IconProps) => (
     <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.36-1.85c3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z" />
   </svg>
 );
+
+/* ── Wayfinding ──────────────────────────────────────────────────────────── */
+
+export const ChevronUp = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m6 14.5 6-6 6 6" />
+  </svg>
+);
+
+export const StoreIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M4 9.5V20h16V9.5" />
+    <path d="M3 5.5h18l-1 3.2a3 3 0 0 1-2.9 2.3 3 3 0 0 1-2.9-2.3 3 3 0 0 1-2.9 2.3 3 3 0 0 1-2.9-2.3A3 3 0 0 1 6 11a3 3 0 0 1-2-2.3Z" />
+    <path d="M10 20v-5h4v5" />
+  </svg>
+);
+
+export const StarIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4L4.2 9.7l5.4-.8L12 4Z" />
+  </svg>
+);
+
+export const TagIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M11.6 3.5H20v8.4l-8.7 8.7a1.5 1.5 0 0 1-2.1 0l-6.3-6.3a1.5 1.5 0 0 1 0-2.1l8.7-8.7Z" />
+    <circle cx="16" cy="8" r="1.4" />
+  </svg>
+);
+
+export const FlameIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M12 3s4.5 3.6 4.5 8a4.5 4.5 0 0 1-9 0c0-1.4.5-2.5 1.2-3.4.3 1.2 1 1.9 1.8 2.1C10 8 11 5.2 12 3Z" />
+    <path d="M7.5 13.5c-.3.8-.5 1.6-.5 2.3a5 5 0 0 0 10 0c0-.7-.2-1.5-.5-2.3" />
+  </svg>
+);
+
+/* ── Category marks ──────────────────────────────────────────────────────── */
+
+export const WrenchIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M15.6 4.4a4.6 4.6 0 0 0-6 5.9l-5.2 5.2a1.6 1.6 0 0 0 0 2.3l1.8 1.8a1.6 1.6 0 0 0 2.3 0l5.2-5.2a4.6 4.6 0 0 0 5.9-6l-2.7 2.7-2.6-.7-.7-2.6 2.7-2.7Z" />
+  </svg>
+);
+
+export const FrameIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="2.6" />
+    <path d="m5 5 5 5M19 5l-5 5M5 19l5-5M19 19l-5-5" />
+    <circle cx="4.5" cy="4.5" r="1.5" />
+    <circle cx="19.5" cy="4.5" r="1.5" />
+    <circle cx="4.5" cy="19.5" r="1.5" />
+    <circle cx="19.5" cy="19.5" r="1.5" />
+  </svg>
+);
+
+export const BoardIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <rect x="5" y="5" width="14" height="14" rx="2" />
+    <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+    <path d="M9.5 3.5V5M14.5 3.5V5M9.5 19v1.5M14.5 19v1.5M3.5 9.5H5M3.5 14.5H5M19 9.5h1.5M19 14.5h1.5" />
+  </svg>
+);
+
+export const MotorIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="12" cy="12" r="1.3" />
+    <path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18" />
+  </svg>
+);
+
+export const BatteryIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <rect x="2.5" y="7" width="16" height="10" rx="2.5" />
+    <path d="M21.5 10.5v3" />
+    <path d="M6 10.5v3M9.5 10.5v3M13 10.5v3" />
+  </svg>
+);
+
+export const PlugIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M9 3.5v5M15 3.5v5" />
+    <path d="M6.5 8.5h11v2.2a5.5 5.5 0 0 1-11 0V8.5Z" />
+    <path d="M12 16.2v4.3" />
+  </svg>
+);
+
+export const PropellerIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="1.8" />
+    <path d="M12 10.2c0-3 1-6.2 3.4-6.2 1.6 0 2.4 1.4 1.9 3-.6 1.9-3 3.2-5.3 3.2Z" />
+    <path d="M13.8 12c3 0 6.2 1 6.2 3.4 0 1.6-1.4 2.4-3 1.9-1.9-.6-3.2-3-3.2-5.3Z" />
+    <path d="M12 13.8c0 3-1 6.2-3.4 6.2-1.6 0-2.4-1.4-1.9-3 .6-1.9 3-3.2 5.3-3.2Z" />
+    <path d="M10.2 12c-3 0-6.2-1-6.2-3.4 0-1.6 1.4-2.4 3-1.9 1.9.6 3.2 3 3.2 5.3Z" />
+  </svg>
+);
+
+export const KitIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2L12 3Z" />
+    <path d="m4 7.2 8 4.2 8-4.2M12 11.4V21" />
+  </svg>
+);
+
+export const SprayIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M9.5 8.5h4.2l1.8 11a1.5 1.5 0 0 1-1.5 1.7h-4.8a1.5 1.5 0 0 1-1.5-1.7l1.8-11Z" />
+    <path d="M9.8 5.5h3.6v3H9.8z" />
+    <path d="M17 4h1.5M17 7h2.5M17 10h1.5" />
+  </svg>
+);
+
+export const LayersIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m12 3.5 8.5 4.3L12 12 3.5 7.8 12 3.5Z" />
+    <path d="m3.5 12.2 8.5 4.3 8.5-4.3M3.5 16.4l8.5 4.3 8.5-4.3" />
+  </svg>
+);

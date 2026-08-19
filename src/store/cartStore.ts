@@ -1,7 +1,5 @@
 "use client";
 
-import { getProduct } from "@/lib/products";
-
 const STORAGE_KEY = "agrosky.cart.v1";
 
 /**
@@ -53,17 +51,18 @@ class CartStore {
       if (!stored) return [];
       const parsed: unknown = JSON.parse(stored);
       if (!Array.isArray(parsed)) return [];
-      return parsed
-        .filter(
-          (line): line is CartLine =>
-            typeof line === "object" &&
-            line !== null &&
-            typeof (line as CartLine).slug === "string" &&
-            typeof (line as CartLine).qty === "number" &&
-            (line as CartLine).qty > 0,
-        )
-        // Drop anything no longer in the catalogue.
-        .filter((line) => Boolean(getProduct(line.slug)));
+      // Shape only. Lines whose product has left the catalogue are dropped when
+      // they are resolved for display, not here — the store no longer holds the
+      // catalogue, and keeping the line means a product that returns to stock is
+      // still in the cart rather than having been silently discarded.
+      return parsed.filter(
+        (line): line is CartLine =>
+          typeof line === "object" &&
+          line !== null &&
+          typeof (line as CartLine).slug === "string" &&
+          typeof (line as CartLine).qty === "number" &&
+          (line as CartLine).qty > 0,
+      );
     } catch {
       // Corrupted or unavailable storage — start with an empty cart.
       return [];

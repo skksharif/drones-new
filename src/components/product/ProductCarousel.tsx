@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState, type UIEvent } from "react";
 import { ProductCard } from "./ProductCard";
 import { ChevronRight } from "@/components/ui/Icons";
-import type { Product } from "@/lib/types";
+import type { ClientProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const EDGE_TOLERANCE = 12;
@@ -22,7 +22,7 @@ export function ProductCarousel({
   className,
   ariaLabel,
 }: {
-  products: Product[];
+  products: ClientProduct[];
   /** Leading cards marked as LCP candidates. */
   priorityCount?: number;
   className?: string;

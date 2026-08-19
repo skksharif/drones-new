@@ -6,7 +6,6 @@
 export const siteConfig = {
   name: "AgroSky Drone Aspirant",
   legalName: "AGROSKY DRONE ASPIRANT PRIVATE LIMITED",
-  shortName: "AgroSky",
   wordmark: "NEXTGENDRONES",
   tagline: "Next-Gen Drones for Agriculture",
   description:

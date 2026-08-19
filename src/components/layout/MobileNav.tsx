@@ -15,11 +15,12 @@ import {
   WhatsAppIcon,
 } from "@/components/ui/Icons";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-import { categories } from "@/lib/categories";
 import { siteConfig, whatsappLink } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { categories } = useCatalogue();
   const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");

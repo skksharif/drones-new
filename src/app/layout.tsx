@@ -1,16 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
-import { CartToast } from "@/components/cart/CartToast";
-import { BottomNav } from "@/components/layout/BottomNav";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { PageTransition } from "@/components/layout/PageTransition";
-import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { localBusinessSchema, organizationSchema, websiteSchema } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
-import { CartProvider } from "@/store/cart";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -103,6 +94,10 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
+/**
+ * The document shell, and nothing else. Storefront chrome lives in
+ * `(storefront)/layout.tsx`; the admin panel renders straight onto this.
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -113,24 +108,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Warm up the image/font origin before the hero paints. */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
-      {/* The padding keeps the footer clear of the fixed mobile tab bar; the
-          token is 0 on desktop where that bar is hidden. */}
-      <body className="flex min-h-full flex-col bg-surface-app pb-[var(--bottom-nav-h)]">
-        <JsonLd id="ld-organization" data={organizationSchema()} />
-        <JsonLd id="ld-website" data={websiteSchema()} />
-        <JsonLd id="ld-store" data={localBusinessSchema()} />
-
-        <CartProvider>
-          <Header />
-          <main id="main" className="flex-1">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
-          <WhatsAppFab />
-          <CartToast />
-          <BottomNav />
-        </CartProvider>
-      </body>
+      <body className="flex min-h-full flex-col bg-surface-app">{children}</body>
     </html>
   );
 }

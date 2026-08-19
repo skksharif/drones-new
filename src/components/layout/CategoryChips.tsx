@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { categories } from "@/lib/categories";
 import { cn } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
+import type { ReactNode } from "react";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
+import { StoreIcon } from "@/components/ui/Icons";
 
 /**
  * The chip rail that sits under the search bar. It is the primary way around
@@ -11,6 +14,7 @@ import { cn } from "@/lib/utils";
  * the active chip inverts to white so the current section is never in doubt.
  */
 export function CategoryChips({ className }: { className?: string }) {
+  const { categories } = useCatalogue();
   const pathname = usePathname();
   const activeSlug = pathname.startsWith("/category/") ? pathname.split("/")[2] : null;
   const allActive = activeSlug === null && pathname !== "/cart";
@@ -22,14 +26,14 @@ export function CategoryChips({ className }: { className?: string }) {
         className,
       )}
     >
-      <Chip href="/products" label="All" icon="🏪" active={allActive} />
+      <Chip href="/products" label="All" icon={<StoreIcon className="size-4.5" />} active={allActive} />
 
       {categories.map((category) => (
         <Chip
           key={category.slug}
           href={`/category/${category.slug}`}
           label={category.short}
-          icon={category.icon}
+          icon={<CategoryIcon slug={category.slug} className="size-4.5" />}
           active={activeSlug === category.slug}
         />
       ))}
@@ -45,7 +49,7 @@ function Chip({
 }: {
   href: string;
   label: string;
-  icon: string;
+  icon: ReactNode;
   active: boolean;
 }) {
   return (
@@ -60,7 +64,7 @@ function Chip({
           : "bg-white/12 text-white hover:bg-white/20",
       )}
     >
-      <span className="text-base leading-none" aria-hidden>
+      <span className="flex h-4.5 items-center leading-none" aria-hidden>
         {icon}
       </span>
       <span className="whitespace-nowrap text-[0.625rem] font-medium leading-none">{label}</span>

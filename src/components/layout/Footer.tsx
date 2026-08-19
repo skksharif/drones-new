@@ -9,8 +9,8 @@ import {
   PhoneIcon,
   PinIcon,
 } from "@/components/ui/Icons";
-import { categories } from "@/lib/categories";
 import { services, siteConfig } from "@/lib/site";
+import type { CategoryDef } from "@/lib/types";
 
 const COMPANY_LINKS = [
   { href: "/about", label: "About Us" },
@@ -26,7 +26,7 @@ const SOCIALS = [
   { href: siteConfig.social.linkedin, label: "LinkedIn", Icon: LinkedInIcon },
 ];
 
-export function Footer() {
+export function Footer({ categories }: { categories: CategoryDef[] }) {
   const { contact, address } = { contact: siteConfig.contact, address: siteConfig.contact.address };
 
   return (
@@ -167,9 +167,20 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {siteConfig.legalName}. All Rights Reserved.
           </p>
-          <p>
-            Founded by {siteConfig.founder}, {siteConfig.founderRole}
-          </p>
+          <div className="flex items-center gap-4">
+            <p>
+              Founded by {siteConfig.founder}, {siteConfig.founderRole}
+            </p>
+            {/* Staff entry point. Unauthenticated visitors only ever see the
+                login form; robots.ts and the admin metadata keep it unindexed. */}
+            <Link
+              href="/admin"
+              rel="nofollow"
+              className="shrink-0 text-ink-500 transition-colors hover:text-brand-300"
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

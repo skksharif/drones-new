@@ -1,5 +1,5 @@
 import { ProductCard } from "./ProductCard";
-import type { Product } from "@/lib/types";
+import type { ClientProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function ProductGrid({
@@ -9,7 +9,7 @@ export function ProductGrid({
   priorityCount = 0,
   columns = "default",
 }: {
-  products: Product[];
+  products: ClientProduct[];
   className?: string;
   priorityCount?: number;
   columns?: "default" | "wide";

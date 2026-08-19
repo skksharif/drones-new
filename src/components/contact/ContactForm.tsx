@@ -3,9 +3,9 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { CheckIcon } from "@/components/ui/Icons";
-import { categories } from "@/lib/categories";
 import { siteConfig, whatsappLink } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
 
 interface Fields {
   name: string;
@@ -41,6 +41,7 @@ function validate(values: Fields): Errors {
  * replacing the body of `onSubmit` only.
  */
 export function ContactForm() {
+  const { categories } = useCatalogue();
   const [values, setValues] = useState<Fields>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");

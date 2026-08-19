@@ -1,156 +1,36 @@
-import { products } from "./products";
 import type { CategoryDef } from "./types";
 
 /**
- * Category order drives the chip rail under the search bar, the home page
- * sections and the category grid — the most shopped groups come first.
+ * Category selectors. Like the product selectors, these take the list to work
+ * on rather than closing over a module-level array — the catalogue is loaded
+ * per request on the server and held in context in the browser.
  */
-export const categories: CategoryDef[] = [
-  {
-    slug: "drones",
-    name: "Drones",
-    short: "Drones",
-    icon: "🚁",
-    description:
-      "Complete, ready-to-fly UAV platforms for spraying, surveillance, firefighting and personal air mobility.",
-    tagline: "Agricultural drones for every farm",
-    group: "drone",
-    image: "/images/services/crop-spraying.jpg",
-    types: ["Spraying Drone", "Surveillance Drone", "Firefighting Drone", "Human-Flying Drone"],
-  },
-  {
-    slug: "accessories",
-    name: "Accessories",
-    short: "Accessories",
-    icon: "🔧",
-    description:
-      "Landing gear, mounts and hardware that keep your airframe serviceable season after season.",
-    tagline: "Hardware that keeps you flying",
-    group: "part",
-    image: "/images/products/p4.jpg",
-    types: ["Landing Gear", "Hardware"],
-  },
-  {
-    slug: "drone-frames",
-    name: "Drone Frames",
-    short: "Frames",
-    icon: "🛠️",
-    description:
-      "EFT and S-series airframes engineered for agricultural payloads, quick assembly and long service life.",
-    tagline: "Airframes built for heavy payloads",
-    group: "part",
-    image: "/images/products/p1.jpg",
-    types: ["Agricultural Frame", "Multirotor Frame"],
-  },
-  {
-    slug: "motors",
-    name: "Motors",
-    short: "Motors",
-    icon: "⚙️",
-    description:
-      "Hobbywing brushless power systems and motor-and-propeller combo kits for heavy-lift multirotors.",
-    tagline: "Brushless power for heavy lift",
-    group: "part",
-    image: "/images/products/p14.jpg",
-    types: ["Brushless Motor", "Motor + Propeller Combo"],
-  },
-  {
-    slug: "flight-controllers",
-    name: "Flight Controllers",
-    short: "Flight Controller",
-    icon: "🕹️",
-    description:
-      "Pixhawk, Cube and NAZA autopilots — the brain behind stable, repeatable autonomous missions.",
-    tagline: "The brain behind every mission",
-    group: "part",
-    image: "/images/products/p10.jpg",
-    types: ["Autopilot", "Autopilot + GPS Combo"],
-  },
-  {
-    slug: "batteries",
-    name: "Batteries",
-    short: "Batteries",
-    icon: "🔋",
-    description:
-      "High-discharge LiPo packs sized for 12S agricultural platforms and long spraying sorties.",
-    tagline: "Flight packs for longer sorties",
-    group: "part",
-    image: "/images/products/p13.jpg",
-    types: [],
-  },
-  {
-    slug: "chargers",
-    name: "Chargers",
-    short: "Charger",
-    icon: "🔌",
-    description:
-      "Fast field chargers and balance units that turn a battery around between sprays.",
-    tagline: "Turn packs around between sprays",
-    group: "part",
-    image: "/images/products/p16.jpg",
-    types: [],
-  },
-  {
-    slug: "propellers",
-    name: "Propellers",
-    short: "Propellers",
-    icon: "🌀",
-    description:
-      "Balanced carbon and composite folding propellers sized for 24-inch and 30-inch heavy-lift setups.",
-    tagline: "Balanced carbon and composite blades",
-    group: "part",
-    image: "/images/products/p6.jpg",
-    types: ["Folding Propeller", "Propeller with Hub"],
-  },
-  {
-    slug: "controllers-kits",
-    name: "Controllers & Kits",
-    short: "Kits",
-    icon: "📦",
-    description:
-      "Complete agricultural flight-control kits with radio, GPS and spraying logic pre-integrated.",
-    tagline: "Everything pre-integrated in one box",
-    group: "part",
-    image: "/images/products/p12.jpg",
-    types: ["Flight Control Kit"],
-  },
-  {
-    slug: "spray-systems",
-    name: "Spray Systems & Nozzles",
-    short: "Spray Systems",
-    icon: "💧",
-    description:
-      "Extended, Y-type and centrifugal nozzles that decide how evenly your chemical actually lands.",
-    tagline: "Where your chemical actually lands",
-    group: "part",
-    image: "/images/products/p18.jpg",
-    types: ["Pressure Nozzle", "Centrifugal Nozzle"],
-  },
-];
 
-export const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
-
-export function getCategory(slug: string): CategoryDef | undefined {
-  return categoryBySlug.get(slug);
+export function findCategory(
+  categories: CategoryDef[],
+  slug: string,
+): CategoryDef | undefined {
+  return categories.find((category) => category.slug === slug);
 }
 
-export function categoryName(slug: string): string {
-  return categoryBySlug.get(slug)?.name ?? slug;
+export function categoryName(categories: CategoryDef[], slug: string): string {
+  return findCategory(categories, slug)?.name ?? slug;
 }
 
-export function categoryShortName(slug: string): string {
-  return categoryBySlug.get(slug)?.short ?? slug;
-}
-
-export function categoryIcon(slug: string): string {
-  return categoryBySlug.get(slug)?.icon ?? "📦";
+export function categoryShortName(categories: CategoryDef[], slug: string): string {
+  return findCategory(categories, slug)?.short ?? slug;
 }
 
 /**
- * Categories that actually have something to sell. Empty ones still exist in the
- * list above — they carry the chip and the landing page — but sections and rails
- * built from products skip them.
+ * Categories that actually have something to sell. Empty ones still exist —
+ * they carry the chip and the landing page — but sections and rails built from
+ * products skip them.
  */
-export const stockedCategories = categories.filter((category) =>
-  products.some((product) => product.category === category.slug),
-);
+export function stockedCategories<T extends { category: string }>(
+  categories: CategoryDef[],
+  products: T[],
+): CategoryDef[] {
+  return categories.filter((category) =>
+    products.some((product) => product.category === category.slug),
+  );
+}

@@ -1,13 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { AddToCartButton } from "./AddToCartButton";
 import { WhatsAppIcon } from "@/components/ui/Icons";
-import { categoryName } from "@/lib/categories";
 import { formatPrice } from "@/lib/format";
-import { discountPercent, newArrivalSlugs } from "@/lib/products";
+import { discountPercent } from "@/lib/products";
 import { siteConfig, whatsappLink } from "@/lib/site";
-import type { Product } from "@/lib/types";
+import type { ClientProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
 
 /**
  * Catalogue tile: image with a single corner flag, then category, name, price
@@ -21,14 +23,15 @@ export function ProductCard({
   /** Grid sizes hint, so Next serves an appropriately sized image. */
   sizes = "(min-width: 1280px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 47vw",
 }: {
-  product: Product;
+  product: ClientProduct;
   priority?: boolean;
   className?: string;
   sizes?: string;
 }) {
+  const { categoryName, newArrivals } = useCatalogue();
   const enquiryOnly = product.price === null;
   const discount = discountPercent(product);
-  const flag = discount !== null ? "SALE" : newArrivalSlugs.has(product.slug) ? "NEW" : null;
+  const flag = discount !== null ? "SALE" : newArrivals.has(product.slug) ? "NEW" : null;
 
   return (
     <article

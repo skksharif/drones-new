@@ -7,8 +7,13 @@ export interface CategoryDef {
   name: string;
   /** Compact label for the category chip rail and bottom-sheet filters. */
   short: string;
-  /** Emoji shown on the chip rail, section headings and category tiles. */
-  icon: string;
+  /**
+   * @deprecated Legacy emoji, still present in the stored documents but no
+   * longer rendered: the category mark comes from `components/ui/CategoryIcon`
+   * and is keyed off the slug. Stripped before the catalogue reaches the
+   * browser.
+   */
+  icon?: string;
   /** Short blurb used on category cards and as the meta description seed. */
   description: string;
   /** One-line tagline shown under the section heading on the home page. */
@@ -17,11 +22,62 @@ export interface CategoryDef {
   image: string;
   /** Sub-types available inside this category, used by the subcategory filter. */
   types: string[];
+  /**
+   * Display position. Array order carried this before the catalogue moved to a
+   * database, where document order is not guaranteed; the admin panel edits it
+   * to reorder the chip rail and the home page sections.
+   */
+  order?: number;
 }
 
 export interface SpecRow {
   label: string;
   value: string;
+}
+
+/**
+ * The catalogue as a whole. Read on the server, and handed to the browser as a
+ * {@link ClientCatalogue} so the cart and the filters can work synchronously.
+ */
+export interface Catalogue {
+  products: Product[];
+  categories: CategoryDef[];
+  banners: BannerDef[];
+}
+
+/**
+ * A hand-authored slide for the home page banner.
+ *
+ * When any banner is active it replaces the automatic offer carousel wholesale
+ * — mixing an uploaded image with the generated text slides looks like two
+ * different sites. With none active the automatic slides come back.
+ */
+export interface BannerDef {
+  slug: string;
+  image: string;
+  alt: string;
+  /** Overlay copy. All optional: an image on its own is a valid banner. */
+  headline?: string;
+  subline?: string;
+  ctaLabel?: string;
+  /** Internal path only, e.g. `/category/drones`. Never an external URL. */
+  href?: string;
+  /** Drafts stay out of the carousel without being deleted. */
+  active: boolean;
+  /** Display position, as on {@link CategoryDef.order}. */
+  order?: number;
+}
+
+/**
+ * What the browser actually needs. The long-form copy is dropped: only the
+ * product page renders it, and that page is server-rendered, so shipping it to
+ * every visitor costs bandwidth nobody spends.
+ */
+export type ClientProduct = Omit<Product, "description" | "highlights">;
+
+export interface ClientCatalogue {
+  products: ClientProduct[];
+  categories: CategoryDef[];
 }
 
 export interface Product {
@@ -53,4 +109,6 @@ export interface Product {
   specs: SpecRow[];
   highlights: string[];
   tags: string[];
+  /** Display position, for the same reason as {@link CategoryDef.order}. */
+  order?: number;
 }

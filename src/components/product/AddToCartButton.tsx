@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CartIcon, CheckIcon, PlusIcon } from "@/components/ui/Icons";
 import { isPurchasable } from "@/lib/format";
-import type { Product } from "@/lib/types";
+import type { ClientProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 
@@ -13,7 +13,7 @@ export function AddToCartButton({
   qty = 1,
   className,
 }: {
-  product: Product;
+  product: ClientProduct;
   /** Icon-only variant used inside product cards. */
   compact?: boolean;
   qty?: number;

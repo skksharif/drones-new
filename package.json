@@ -6,10 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "node --env-file-if-exists=.env.local scripts/seed.mts",
+    "migrate:images": "node --env-file-if-exists=.env.local scripts/migrate-images.mts",
+    "admin:password": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/admin-password.mts"
   },
   "dependencies": {
     "framer-motion": "^13.1.0",
+    "mongodb": "^7.5.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

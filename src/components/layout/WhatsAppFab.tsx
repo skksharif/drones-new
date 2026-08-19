@@ -24,7 +24,7 @@ export function WhatsAppFab() {
       href={whatsappLink(`Hi ${siteConfig.name}, I have a question about your products.`)}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with AgroSky on WhatsApp"
+      aria-label={`Chat with ${siteConfig.name} on WhatsApp`}
       className={cn(
         // Offset against the mobile tab bar so the two never overlap; the token
         // collapses to 0 on desktop where there is no tab bar.

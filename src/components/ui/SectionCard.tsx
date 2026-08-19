@@ -19,7 +19,7 @@ export function SectionCard({
   id,
   as: Heading = "h2",
 }: {
-  icon?: string;
+  icon?: ReactNode;
   title: string;
   subtitle?: string;
   href?: string;
@@ -47,7 +47,10 @@ export function SectionCard({
             )}
           >
             {icon ? (
-              <span className="text-base leading-none" aria-hidden>
+              <span
+                className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-800 [&>svg]:size-4"
+                aria-hidden
+              >
                 {icon}
               </span>
             ) : null}

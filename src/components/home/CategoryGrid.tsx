@@ -1,18 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
-import { categories } from "@/lib/categories";
 import { countByCategory } from "@/lib/products";
+import type { CategoryDef } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 
 /**
  * Category tiles. Two up on a phone, widening on larger screens — used by the
  * Categories tab, where browsing by group is the whole point of the page.
  */
-export function CategoryGrid({ className }: { className?: string }) {
+export function CategoryGrid({
+  categories,
+  products,
+  className,
+}: {
+  categories: CategoryDef[];
+  /** Only the category of each product is read, to show a per-tile count. */
+  products: { category: string }[];
+  className?: string;
+}) {
   return (
     <div className={cn("grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-6", className)}>
       {categories.map((category) => {
-        const count = countByCategory(category.slug);
+        const count = countByCategory(products, category.slug);
 
         return (
           <Link
@@ -29,8 +39,8 @@ export function CategoryGrid({ className }: { className?: string }) {
                 loading="lazy"
                 className="object-cover"
               />
-              <span className="absolute left-1.5 top-1.5 flex size-6 items-center justify-center rounded-lg bg-white/90 text-xs" aria-hidden>
-                {category.icon}
+              <span className="absolute left-1.5 top-1.5 flex size-6 items-center justify-center rounded-lg bg-white/90 text-brand-800" aria-hidden>
+                <CategoryIcon slug={category.slug} className="size-3.5" />
               </span>
             </div>
 

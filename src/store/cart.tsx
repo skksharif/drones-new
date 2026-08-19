@@ -10,14 +10,14 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { useCatalogue } from "./catalogue";
 import { cartStore } from "./cartStore";
-import { getProduct } from "@/lib/products";
-import type { Product } from "@/lib/types";
+import type { ClientProduct } from "@/lib/types";
 
 export interface ResolvedLine {
   slug: string;
   qty: number;
-  product: Product;
+  product: ClientProduct;
   /** Line total, or null when the product is enquiry-only. */
   lineTotal: number | null;
 }
@@ -42,6 +42,7 @@ interface CartContextValue {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { findProduct } = useCatalogue();
   const snapshot = useSyncExternalStore(
     cartStore.subscribe,
     cartStore.getSnapshot,
@@ -67,7 +68,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CartContextValue>(() => {
     const lines: ResolvedLine[] = snapshot.lines.flatMap((line) => {
-      const product = getProduct(line.slug);
+      const product = findProduct(line.slug);
       if (!product) return [];
       return [
         {
@@ -91,7 +92,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       qtyOf: (slug: string) => lines.find((line) => line.slug === slug)?.qty ?? 0,
       lastAdded,
     };
-  }, [snapshot, add, setQty, remove, clear, lastAdded]);
+  }, [snapshot, add, setQty, remove, clear, lastAdded, findProduct]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

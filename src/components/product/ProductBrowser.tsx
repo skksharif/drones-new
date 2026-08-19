@@ -13,20 +13,23 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { FilterIcon, SearchIcon, SortIcon } from "@/components/ui/Icons";
 import { useProductFilters } from "@/hooks/useProductFilters";
 import { SORT_OPTIONS, activeFilterCount, filterProducts, isDefaultFilters } from "@/lib/filters";
-import { products as allProducts } from "@/lib/products";
-import type { Product } from "@/lib/types";
+import type { ClientProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
 
 export function ProductBrowser({
-  source = allProducts,
+  source,
   lockedCategory,
   showSearch = true,
   searchAutoFocus = false,
   emptyHint,
   className,
 }: {
-  /** Product pool to filter within — a category page passes its own subset. */
-  source?: Product[];
+  /**
+   * Product pool to filter within — a category page passes its own subset.
+   * Defaults to the whole catalogue from context.
+   */
+  source?: ClientProduct[];
   /** Fixes the category facet (category pages) and hides it from the panel. */
   lockedCategory?: string;
   showSearch?: boolean;
@@ -34,8 +37,12 @@ export function ProductBrowser({
   emptyHint?: string;
   className?: string;
 }) {
+  const { products: wholeCatalogue } = useCatalogue();
+  const pool = source ?? wholeCatalogue;
+
   const {
     filters,
+    priceBounds,
     setQuery,
     setSort,
     toggleCategory,
@@ -53,10 +60,13 @@ export function ProductBrowser({
   const closeFilters = useCallback(() => setFiltersOpen(false), []);
   const closeSort = useCallback(() => setSortOpen(false), []);
 
-  const { items, total } = useMemo(() => filterProducts(filters, source), [filters, source]);
+  const { items, total } = useMemo(
+    () => filterProducts(filters, pool, priceBounds),
+    [filters, pool, priceBounds],
+  );
 
-  const filterCount = activeFilterCount(filters) - (lockedCategory ? 1 : 0);
-  const hasFilters = !isDefaultFilters(filters);
+  const filterCount = activeFilterCount(filters, priceBounds) - (lockedCategory ? 1 : 0);
+  const hasFilters = !isDefaultFilters(filters, priceBounds);
   const activeSortLabel = SORT_OPTIONS.find((o) => o.value === filters.sort)?.label;
 
   const panelProps = {
@@ -68,7 +78,7 @@ export function ProductBrowser({
     onPriceChange: setPriceRange,
     onFeaturedChange: setFeaturedOnly,
     hideCategories: Boolean(lockedCategory),
-    source,
+    source: pool,
   };
 
   const clearAllAndClose = useCallback(() => {

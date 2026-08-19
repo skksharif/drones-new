@@ -6,14 +6,12 @@ import {
   AVAILABILITY_OPTIONS,
   GROUP_OPTIONS,
   availableTypes,
-  defaultFilters,
   type FilterState,
 } from "@/lib/filters";
-import { categories } from "@/lib/categories";
 import { formatPriceCompact } from "@/lib/format";
-import { priceBounds, products as allProducts } from "@/lib/products";
-import type { Availability, Product, ProductGroup } from "@/lib/types";
+import type { Availability, ClientProduct, ProductGroup } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
 
 export interface FilterPanelProps {
   filters: FilterState;
@@ -26,7 +24,7 @@ export interface FilterPanelProps {
   /** Hides the category block on category pages where it is already fixed. */
   hideCategories?: boolean;
   /** Pool the counts are drawn from — a category page passes its own subset. */
-  source?: Product[];
+  source: ClientProduct[];
 }
 
 export function FilterPanel({
@@ -38,8 +36,9 @@ export function FilterPanel({
   onPriceChange,
   onFeaturedChange,
   hideCategories = false,
-  source = allProducts,
+  source,
 }: FilterPanelProps) {
+  const { categories } = useCatalogue();
   const types = useMemo(
     () => availableTypes(filters.categories, source),
     [filters.categories, source],
@@ -252,6 +251,7 @@ function PriceRange({
   max: number;
   onChange: (min: number, max: number) => void;
 }) {
+  const { priceBounds } = useCatalogue();
   const [localMin, setLocalMin] = useState(min);
   const [localMax, setLocalMax] = useState(max);
   const timer = useRef<number | null>(null);
@@ -295,15 +295,15 @@ function PriceRange({
   const span = priceBounds.max - priceBounds.min;
   const leftPct = ((localMin - priceBounds.min) / span) * 100;
   const rightPct = ((localMax - priceBounds.min) / span) * 100;
-  const isDefault = localMin === defaultFilters.minPrice && localMax === defaultFilters.maxPrice;
+  const isDefault = localMin === priceBounds.min && localMax === priceBounds.max;
 
   const reset = () => {
     if (timer.current !== null) window.clearTimeout(timer.current);
     timer.current = null;
-    setLocalMin(defaultFilters.minPrice);
-    setLocalMax(defaultFilters.maxPrice);
-    setCommitted({ min: defaultFilters.minPrice, max: defaultFilters.maxPrice });
-    onChange(defaultFilters.minPrice, defaultFilters.maxPrice);
+    setLocalMin(priceBounds.min);
+    setLocalMax(priceBounds.max);
+    setCommitted({ min: priceBounds.min, max: priceBounds.max });
+    onChange(priceBounds.min, priceBounds.max);
   };
 
   return (

@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { CheckIcon, ChevronRight } from "@/components/ui/Icons";
 import { formatPrice } from "@/lib/format";
-import { getProduct } from "@/lib/products";
 import { useCart } from "@/store/cart";
+import { useCatalogue } from "@/store/catalogue";
 
 /**
  * Confirmation for adds made from a card or a slider, where the cart icon is
@@ -14,7 +14,8 @@ import { useCart } from "@/store/cart";
  */
 export function CartToast() {
   const { lastAdded, count } = useCart();
-  const product = lastAdded ? getProduct(lastAdded) : undefined;
+  const { findProduct } = useCatalogue();
+  const product = lastAdded ? findProduct(lastAdded) : undefined;
 
   if (!product) return null;
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { CloseIcon } from "@/components/ui/Icons";
-import { categoryName } from "@/lib/categories";
-import { AVAILABILITY_OPTIONS, GROUP_OPTIONS, defaultFilters, type FilterState } from "@/lib/filters";
+import { AVAILABILITY_OPTIONS, GROUP_OPTIONS, type FilterState } from "@/lib/filters";
 import { formatPriceCompact } from "@/lib/format";
 import type { Availability, ProductGroup } from "@/lib/types";
+import { useCatalogue } from "@/store/catalogue";
 
 interface Props {
   filters: FilterState;
@@ -31,6 +31,7 @@ export function ActiveFilterChips({
   onClearAll,
   hideCategories = false,
 }: Props) {
+  const { categoryName, priceBounds } = useCatalogue();
   const chips: { key: string; label: string; onRemove: () => void }[] = [];
 
   if (filters.q.trim()) {
@@ -71,14 +72,11 @@ export function ActiveFilterChips({
     });
   }
 
-  if (
-    filters.minPrice !== defaultFilters.minPrice ||
-    filters.maxPrice !== defaultFilters.maxPrice
-  ) {
+  if (filters.minPrice !== priceBounds.min || filters.maxPrice !== priceBounds.max) {
     chips.push({
       key: "price",
       label: `${formatPriceCompact(filters.minPrice)} – ${formatPriceCompact(filters.maxPrice)}`,
-      onRemove: () => onPriceChange(defaultFilters.minPrice, defaultFilters.maxPrice),
+      onRemove: () => onPriceChange(priceBounds.min, priceBounds.max),
     });
   }
 

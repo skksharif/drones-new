@@ -2,14 +2,16 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import {
+  DEFAULT_SORT,
   SORT_OPTIONS,
-  defaultFilters,
+  makeDefaultFilters,
   type FilterState,
   type SortValue,
 } from "@/lib/filters";
-import { priceBounds } from "@/lib/products";
+import type { PriceBounds } from "@/lib/products";
 import type { Availability, ProductGroup } from "@/lib/types";
 import { clamp, toggle } from "@/lib/utils";
+import { useCatalogue } from "@/store/catalogue";
 
 const PARAM = {
   q: "q",
@@ -75,17 +77,26 @@ function readList(params: URLSearchParams, key: string): string[] {
   return [...new Set(raw.split(",").map((v) => v.trim()).filter(Boolean))];
 }
 
-function readInt(params: URLSearchParams, key: string, fallback: number): number {
+function readInt(
+  params: URLSearchParams,
+  key: string,
+  fallback: number,
+  bounds: PriceBounds,
+): number {
   const raw = params.get(key);
   if (raw === null) return fallback;
   const parsed = Number.parseInt(raw, 10);
-  return Number.isFinite(parsed) ? clamp(parsed, priceBounds.min, priceBounds.max) : fallback;
+  return Number.isFinite(parsed) ? clamp(parsed, bounds.min, bounds.max) : fallback;
 }
 
-function parseFilters(search: string, lockedCategory?: string): FilterState {
+function parseFilters(
+  search: string,
+  bounds: PriceBounds,
+  lockedCategory?: string,
+): FilterState {
   const params = new URLSearchParams(search);
-  const min = readInt(params, PARAM.min, defaultFilters.minPrice);
-  const max = readInt(params, PARAM.max, defaultFilters.maxPrice);
+  const min = readInt(params, PARAM.min, bounds.min, bounds);
+  const max = readInt(params, PARAM.max, bounds.max, bounds);
   const sortParam = params.get(PARAM.sort);
 
   return {
@@ -101,12 +112,16 @@ function parseFilters(search: string, lockedCategory?: string): FilterState {
     minPrice: Math.min(min, max),
     maxPrice: Math.max(min, max),
     featuredOnly: params.get(PARAM.featured) === "1",
-    sort: SORTS.includes(sortParam as SortValue) ? (sortParam as SortValue) : defaultFilters.sort,
+    sort: SORTS.includes(sortParam as SortValue) ? (sortParam as SortValue) : DEFAULT_SORT,
   };
 }
 
 /** Canonical querystring for a filter state — defaults are omitted entirely. */
-function serialiseFilters(filters: FilterState, lockedCategory?: string): string {
+function serialiseFilters(
+  filters: FilterState,
+  bounds: PriceBounds,
+  lockedCategory?: string,
+): string {
   const params = new URLSearchParams();
 
   if (filters.q.trim()) params.set(PARAM.q, filters.q.trim());
@@ -116,18 +131,22 @@ function serialiseFilters(filters: FilterState, lockedCategory?: string): string
   if (filters.types.length) params.set(PARAM.type, filters.types.join(","));
   if (filters.groups.length) params.set(PARAM.group, filters.groups.join(","));
   if (filters.availability.length) params.set(PARAM.stock, filters.availability.join(","));
-  if (filters.minPrice !== defaultFilters.minPrice) params.set(PARAM.min, String(filters.minPrice));
-  if (filters.maxPrice !== defaultFilters.maxPrice) params.set(PARAM.max, String(filters.maxPrice));
+  if (filters.minPrice !== bounds.min) params.set(PARAM.min, String(filters.minPrice));
+  if (filters.maxPrice !== bounds.max) params.set(PARAM.max, String(filters.maxPrice));
   if (filters.featuredOnly) params.set(PARAM.featured, "1");
-  if (filters.sort !== defaultFilters.sort) params.set(PARAM.sort, filters.sort);
+  if (filters.sort !== DEFAULT_SORT) params.set(PARAM.sort, filters.sort);
 
   return params.toString();
 }
 
 /** Keeps the price range ordered and in bounds, and pins a locked category. */
-function normalise(filters: FilterState, lockedCategory?: string): FilterState {
-  const a = clamp(filters.minPrice, priceBounds.min, priceBounds.max);
-  const b = clamp(filters.maxPrice, priceBounds.min, priceBounds.max);
+function normalise(
+  filters: FilterState,
+  bounds: PriceBounds,
+  lockedCategory?: string,
+): FilterState {
+  const a = clamp(filters.minPrice, bounds.min, bounds.max);
+  const b = clamp(filters.maxPrice, bounds.min, bounds.max);
 
   return {
     ...filters,
@@ -149,28 +168,33 @@ function normalise(filters: FilterState, lockedCategory?: string): FilterState {
  * markup for crawlers, no Suspense skeleton); and each update reads the current
  * URL synchronously, so two taps in the same frame can never clobber each other
  * the way a stale React snapshot would.
+ *
+ * The price range is bounded by what is actually in the catalogue, which now
+ * comes from the catalogue context rather than a compiled-in constant.
  */
 export function useProductFilters(lockedCategory?: string) {
+  const { priceBounds } = useCatalogue();
   const search = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const filters = useMemo(
-    () => parseFilters(search, lockedCategory),
-    [search, lockedCategory],
+    () => parseFilters(search, priceBounds, lockedCategory),
+    [search, priceBounds, lockedCategory],
   );
 
   const update = useCallback(
     (patch: (prev: FilterState) => Partial<FilterState>) => {
       // Re-read rather than closing over `filters`: the URL is the truth, and
       // it is already up to date even mid-frame.
-      const prev = parseFilters(window.location.search, lockedCategory);
-      const next = normalise({ ...prev, ...patch(prev) }, lockedCategory);
-      writeSearch(serialiseFilters(next, lockedCategory));
+      const prev = parseFilters(window.location.search, priceBounds, lockedCategory);
+      const next = normalise({ ...prev, ...patch(prev) }, priceBounds, lockedCategory);
+      writeSearch(serialiseFilters(next, priceBounds, lockedCategory));
     },
-    [lockedCategory],
+    [lockedCategory, priceBounds],
   );
 
   return {
     filters,
+    priceBounds,
     setQuery: useCallback((q: string) => update(() => ({ q })), [update]),
     setSort: useCallback((sort: SortValue) => update(() => ({ sort })), [update]),
     toggleCategory: useCallback(
@@ -202,8 +226,8 @@ export function useProductFilters(lockedCategory?: string) {
     ),
     /** Resets every facet but keeps the chosen sort order. */
     clearAll: useCallback(
-      () => update((prev) => ({ ...defaultFilters, sort: prev.sort })),
-      [update],
+      () => update((prev) => ({ ...makeDefaultFilters(priceBounds), sort: prev.sort })),
+      [update, priceBounds],
     ),
   };
 }

@@ -7,8 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Cart and query-string result pages carry no unique indexable content.
-        disallow: ["/cart", "/search"],
+        // Cart and query-string result pages carry no unique indexable content;
+        // the admin panel is staff-only and noindex in its metadata too.
+        disallow: ["/cart", "/search", "/admin"],
       },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

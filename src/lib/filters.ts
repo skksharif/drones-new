@@ -1,5 +1,5 @@
-import { products as allProducts, priceBounds } from "./products";
-import type { Availability, Product, ProductGroup } from "./types";
+import type { PriceBounds } from "./products";
+import type { Availability, ClientProduct, ProductGroup } from "./types";
 
 export const SORT_OPTIONS = [
   { value: "relevance", label: "Relevance" },
@@ -34,27 +34,36 @@ export interface FilterState {
   sort: SortValue;
 }
 
-export const defaultFilters: FilterState = {
-  q: "",
-  categories: [],
-  types: [],
-  groups: [],
-  availability: [],
-  minPrice: priceBounds.min,
-  maxPrice: priceBounds.max,
-  featuredOnly: false,
-  sort: "relevance",
-};
+export const DEFAULT_SORT: SortValue = "relevance";
 
-export function isDefaultFilters(f: FilterState): boolean {
+/**
+ * The unfiltered state. The price range depends on what is actually in the
+ * catalogue, so this is built from the current bounds rather than being a
+ * constant as it was when the catalogue was compiled in.
+ */
+export function makeDefaultFilters(bounds: PriceBounds): FilterState {
+  return {
+    q: "",
+    categories: [],
+    types: [],
+    groups: [],
+    availability: [],
+    minPrice: bounds.min,
+    maxPrice: bounds.max,
+    featuredOnly: false,
+    sort: DEFAULT_SORT,
+  };
+}
+
+export function isDefaultFilters(f: FilterState, bounds: PriceBounds): boolean {
   return (
     f.q.trim() === "" &&
     f.categories.length === 0 &&
     f.types.length === 0 &&
     f.groups.length === 0 &&
     f.availability.length === 0 &&
-    f.minPrice === defaultFilters.minPrice &&
-    f.maxPrice === defaultFilters.maxPrice &&
+    f.minPrice === bounds.min &&
+    f.maxPrice === bounds.max &&
     !f.featuredOnly
   );
 }
@@ -63,10 +72,10 @@ export function isDefaultFilters(f: FilterState): boolean {
  * Number of active facets shown on the "Filters" badge. The search term is
  * deliberately excluded — it lives in its own field, not in the filter panel.
  */
-export function activeFilterCount(f: FilterState): number {
+export function activeFilterCount(f: FilterState, bounds: PriceBounds): number {
   let n = 0;
   n += f.categories.length + f.types.length + f.groups.length + f.availability.length;
-  if (f.minPrice !== defaultFilters.minPrice || f.maxPrice !== defaultFilters.maxPrice) n += 1;
+  if (f.minPrice !== bounds.min || f.maxPrice !== bounds.max) n += 1;
   if (f.featuredOnly) n += 1;
   return n;
 }
@@ -79,7 +88,7 @@ function normalise(value: string): string {
  * Scores a product against a search query. Returns 0 when there is no match, so
  * callers can both filter and rank with a single pass.
  */
-export function scoreProduct(product: Product, query: string): number {
+export function scoreProduct(product: ClientProduct, query: string): number {
   const q = normalise(query);
   if (!q) return 1;
 
@@ -112,24 +121,30 @@ export function scoreProduct(product: Product, query: string): number {
   return score;
 }
 
-function matchesPrice(product: Product, min: number, max: number): boolean {
+function matchesPrice(
+  product: ClientProduct,
+  min: number,
+  max: number,
+  bounds: PriceBounds,
+): boolean {
   // Enquiry-only products have no price and are only excluded when the range is narrowed.
   if (product.price === null) {
-    return min === priceBounds.min && max === priceBounds.max;
+    return min === bounds.min && max === bounds.max;
   }
   return product.price >= min && product.price <= max;
 }
 
-export interface FilterResult {
-  items: Product[];
+export interface FilterResult<T> {
+  items: T[];
   total: number;
 }
 
-export function filterProducts(
+export function filterProducts<T extends ClientProduct>(
   filters: FilterState,
-  source: Product[] = allProducts,
-): FilterResult {
-  const scored: { product: Product; score: number }[] = [];
+  source: T[],
+  bounds: PriceBounds,
+): FilterResult<T> {
+  const scored: { product: T; score: number }[] = [];
 
   for (const product of source) {
     if (filters.categories.length && !filters.categories.includes(product.category)) continue;
@@ -137,7 +152,7 @@ export function filterProducts(
     if (filters.groups.length && !filters.groups.includes(product.group)) continue;
     if (filters.availability.length && !filters.availability.includes(product.availability)) continue;
     if (filters.featuredOnly && !product.featured) continue;
-    if (!matchesPrice(product, filters.minPrice, filters.maxPrice)) continue;
+    if (!matchesPrice(product, filters.minPrice, filters.maxPrice, bounds)) continue;
 
     const score = scoreProduct(product, filters.q);
     if (score === 0) continue;
@@ -167,13 +182,16 @@ export function filterProducts(
 }
 
 /** Enquiry-only products sort to the end of both price orders. */
-function priceKey(product: Product, descending = false): number {
+function priceKey(product: ClientProduct, descending = false): number {
   if (product.price !== null) return product.price;
   return descending ? -Infinity : Infinity;
 }
 
 /** Subcategory options available given the currently selected categories. */
-export function availableTypes(categorySlugs: string[], source: Product[] = allProducts): string[] {
+export function availableTypes(
+  categorySlugs: string[],
+  source: ClientProduct[],
+): string[] {
   const pool = categorySlugs.length
     ? source.filter((p) => categorySlugs.includes(p.category))
     : source;
