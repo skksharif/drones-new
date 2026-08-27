@@ -229,7 +229,11 @@ function BannerSlide({
             "absolute inset-0 flex flex-col items-center px-5 text-center",
             isImage
               ? "justify-end bg-gradient-to-t from-black/70 via-black/25 to-transparent pb-4"
-              : "justify-center py-5",
+              // Tighter padding on a phone: the copy is a flex item, so when it
+              // does not fit it shrinks rather than overflowing, and the
+              // `overflow: hidden` on the clamped sub-line then cuts a line in
+              // half instead of dropping it.
+              : "justify-center py-3 sm:py-5",
           )}
         >
           {banner.eyebrow ? (
@@ -289,7 +293,18 @@ function BannerSlide({
       role="group"
       aria-roledescription="slide"
       aria-label={`${position} of ${total}: ${label}`}
-      className="relative aspect-[1920/780] w-full shrink-0 snap-start bg-ink-100"
+      // On a phone 2.46:1 leaves the copy almost no room, so an image slide gets
+      // a squarer ratio and a colour slide — which has no picture whose shape
+      // must be kept — gets a fixed floor instead. The copy is positioned
+      // absolutely, so it cannot push the slide taller by itself. That
+      // matters because the copy is a flex item: when it does not fit it
+      // shrinks rather than overflowing, and the clamped sub-line then gets cut
+      // through the middle of a line. Slides stretch to the tallest, so a
+      // content-driven height cannot make the carousel jump.
+      className={cn(
+        "relative w-full shrink-0 snap-start bg-ink-100 sm:aspect-[1920/780]",
+        isImage ? "aspect-2/1" : "min-h-44",
+      )}
       style={isImage ? undefined : { backgroundColor: banner.backgroundColor }}
     >
       {banner.href ? (
