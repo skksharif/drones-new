@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "slug": "sale-eft-e616p-10l-frame",
+    "background": "color",
+    "backgroundColor": "#a12d33",
+    "theme": "light",
+    "eyebrow": "Limited time",
+    "headline": "Sale is live",
+    "subline": "Up to 14% off on EFT E616P 10L Frame — ₹45,300, was ₹52,500.",
+    "ctaLabel": "Shop Now",
+    "href": "/products/eft-e616p-10l-6-axis-agricultural-drone-frame",
+    "active": true
+  },
+  {
+    "slug": "sale-jis-nv20-frame",
+    "background": "color",
+    "backgroundColor": "#a12d33",
+    "theme": "light",
+    "eyebrow": "Limited time",
+    "headline": "Sale is live",
+    "subline": "Up to 13% off on JIS NV20 frame — ₹65,000, was ₹75,000.",
+    "ctaLabel": "Shop Now",
+    "href": "/products/jis-nv20-agriculture-drone-frame-kit-20-l-heavy-duty-spray-uav-chassis",
+    "active": true
+  },
+  {
+    "slug": "sale-g18-20l-frame",
+    "background": "color",
+    "backgroundColor": "#a12d33",
+    "theme": "light",
+    "eyebrow": "Limited time",
+    "headline": "Sale is live",
+    "subline": "Up to 7% off on G18 20L Agricultural Drone Frame — ₹69,500, was ₹75,000.",
+    "ctaLabel": "Shop Now",
+    "href": "/products/eft-g18-20l-agricultural-drone-frame",
+    "active": true
+  }
+]

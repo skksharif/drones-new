@@ -16,20 +16,6 @@
     ]
   },
   {
-    "slug": "accessories",
-    "name": "Accessories",
-    "short": "Accessories",
-    "icon": "🔧",
-    "description": "Landing gear, mounts and hardware that keep your airframe serviceable season after season.",
-    "tagline": "Hardware that keeps you flying",
-    "group": "part",
-    "image": "/images/products/p4.jpg",
-    "types": [
-      "Landing Gear",
-      "Hardware"
-    ]
-  },
-  {
     "slug": "drone-frames",
     "name": "Drone Frames",
     "short": "Frames",
@@ -132,6 +118,20 @@
     "types": [
       "Pressure Nozzle",
       "Centrifugal Nozzle"
+    ]
+  },
+  {
+    "slug": "accessories",
+    "name": "Accessories",
+    "short": "Accessories",
+    "icon": "🔧",
+    "description": "Landing gear, mounts and hardware that keep your airframe serviceable season after season.",
+    "tagline": "Hardware that keeps you flying",
+    "group": "part",
+    "image": "/images/products/p4.jpg",
+    "types": [
+      "Landing Gear",
+      "Hardware"
     ]
   }
 ]

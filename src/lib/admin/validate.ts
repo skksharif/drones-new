@@ -1,6 +1,8 @@
 import type {
   Availability,
+  BannerBackground,
   BannerDef,
+  BannerTheme,
   CategoryDef,
   Product,
   ProductGroup,
@@ -198,6 +200,11 @@ export function parseProductForm(form: FormData, context: ProductContext): Parse
   if (gallery.length > 0) product.gallery = gallery;
   if (bool(form, "featured")) product.featured = true;
   if (bool(form, "bestseller")) product.bestseller = true;
+  if (bool(form, "isHotDeal")) {
+    product.isHotDeal = true;
+    const position = Number(str(form, "hotDealOrder"));
+    if (Number.isFinite(position) && str(form, "hotDealOrder")) product.hotDealOrder = position;
+  }
 
   return { ok: true, value: product };
 }
@@ -222,6 +229,11 @@ function internalPath(raw: string): string | null {
   return raw;
 }
 
+export const BANNER_BACKGROUNDS: BannerBackground[] = ["image", "color"];
+export const BANNER_THEMES: BannerTheme[] = ["light", "dark"];
+
+const HEX_RE = /^#[0-9a-f]{6}$/i;
+
 export function parseBannerForm(form: FormData, context: BannerContext): Parsed<BannerDef> {
   const errors: FieldErrors = {};
 
@@ -230,11 +242,29 @@ export function parseBannerForm(form: FormData, context: BannerContext): Parsed<
   if (!SLUG_RE.test(slug)) errors.slug = "Use lowercase letters, numbers and hyphens.";
   else if (context.takenSlugs.has(slug)) errors.slug = "Another banner already uses this name.";
 
-  const image = str(form, "image");
-  if (!image) errors.image = "Required — a banner is the image.";
+  const background: BannerBackground = str(form, "background") === "color" ? "color" : "image";
+  const theme: BannerTheme = str(form, "theme") === "dark" ? "dark" : "light";
 
+  const image = str(form, "image");
   const alt = str(form, "alt");
-  if (!alt) errors.alt = "Required — it is what a screen reader announces.";
+  const backgroundColor = str(form, "backgroundColor") || "#a12d33";
+
+  const eyebrow = str(form, "eyebrow");
+  const subline = str(form, "subline");
+
+  if (background === "image") {
+    if (!image) errors.image = "Required — the image is the banner.";
+    if (!alt) errors.alt = "Required — it is what a screen reader announces.";
+  } else {
+    if (!HEX_RE.test(backgroundColor)) {
+      errors.backgroundColor = "Use a hex colour such as #a12d33.";
+    }
+    // Nothing is drawn on a colour slide except the copy, so without any the
+    // carousel would advance through a blank rectangle.
+    if (!eyebrow && !headline && !subline && !str(form, "ctaLabel")) {
+      errors.headline = "A colour slide needs some copy — it has no image to carry it.";
+    }
+  }
 
   const hrefRaw = str(form, "href");
   const href = internalPath(hrefRaw);
@@ -251,14 +281,21 @@ export function parseBannerForm(form: FormData, context: BannerContext): Parsed<
 
   const banner: BannerDef = {
     slug,
-    image,
-    alt,
+    background,
+    theme,
     active: bool(form, "active"),
     order: context.existing?.order,
   };
 
+  if (background === "image") {
+    banner.image = image;
+    banner.alt = alt;
+  } else {
+    banner.backgroundColor = backgroundColor.toLowerCase();
+  }
+
+  if (eyebrow) banner.eyebrow = eyebrow;
   if (headline) banner.headline = headline;
-  const subline = str(form, "subline");
   if (subline) banner.subline = subline;
   if (href) banner.href = href;
   if (ctaLabel) banner.ctaLabel = ctaLabel;

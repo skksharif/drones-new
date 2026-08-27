@@ -52,11 +52,24 @@ export interface Catalogue {
  * — mixing an uploaded image with the generated text slides looks like two
  * different sites. With none active the automatic slides come back.
  */
+/** How a slide is painted. */
+export type BannerBackground = "image" | "color";
+
+/** Which way the copy is tinted so it stays legible on the background. */
+export type BannerTheme = "light" | "dark";
+
 export interface BannerDef {
   slug: string;
-  image: string;
-  alt: string;
+  background: BannerBackground;
+  /** Set when `background` is `"image"`. */
+  image?: string;
+  /** `#rrggbb`, set when `background` is `"color"`. */
+  backgroundColor?: string;
+  theme: BannerTheme;
+  /** What a screen reader announces for the image. Image slides only. */
+  alt?: string;
   /** Overlay copy. All optional: an image on its own is a valid banner. */
+  eyebrow?: string;
   headline?: string;
   subline?: string;
   ctaLabel?: string;
@@ -102,6 +115,10 @@ export interface Product {
   availability: Availability;
   featured?: boolean;
   bestseller?: boolean;
+  /** Hand-picked for the Hot Deals rail on the home page. */
+  isHotDeal?: boolean;
+  /** Position within Hot Deals. Unset sorts after everything numbered. */
+  hotDealOrder?: number;
   /** ISO date used for the "Newest" sort order. */
   addedAt: string;
   summary: string;

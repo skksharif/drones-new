@@ -323,9 +323,37 @@ export function ProductForm({
           <Checkbox
             name="bestseller"
             label="Bestseller"
-            hint="Carries a badge and is preferred in Hot Deals."
+            hint="Carries a badge on the card and in the rails."
             defaultChecked={was.checked("bestseller", product?.bestseller ?? false)}
           />
+        </Row>
+
+        <Row>
+          <Checkbox
+            name="isHotDeal"
+            label="Hot deal"
+            hint="Pins this product into the Hot Deals strip at the top of the home page."
+            defaultChecked={was.checked("isHotDeal", product?.isHotDeal ?? false)}
+          />
+          <Field
+            label="Hot deal position"
+            htmlFor="hotDealOrder"
+            hint="Lower numbers come first. Leave blank to sit after the numbered ones."
+          >
+            <TextInput
+              id="hotDealOrder"
+              name="hotDealOrder"
+              type="number"
+              min={0}
+              step={1}
+              inputMode="numeric"
+              placeholder="e.g. 1"
+              defaultValue={was.text(
+                "hotDealOrder",
+                product?.hotDealOrder != null ? String(product.hotDealOrder) : "",
+              )}
+            />
+          </Field>
         </Row>
       </Fieldset>
 

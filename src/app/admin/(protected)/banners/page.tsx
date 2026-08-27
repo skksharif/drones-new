@@ -20,8 +20,8 @@ export default async function AdminBannersPage({ searchParams }: PageProps<"/adm
           <h1 className="text-2xl font-bold text-ink-900">Home banners</h1>
           <p className="mt-1 text-sm text-ink-500">
             {active > 0
-              ? `${active} active — these replace the automatic offer carousel.`
-              : "None active, so the home page is showing the automatic offer carousel."}
+              ? `${active} slide${active === 1 ? "" : "s"} on the home page — one per live banner, replacing the automatic offer carousel.`
+              : "No live banners, so the home page is showing the automatic offer carousel."}
           </p>
         </div>
         <ButtonLink href="/admin/banners/new">New banner</ButtonLink>
@@ -61,19 +61,30 @@ export default async function AdminBannersPage({ searchParams }: PageProps<"/adm
                   href={`/admin/banners/${banner.slug}`}
                   className="-ml-1 flex flex-1 items-center gap-3 p-3 transition-colors hover:bg-ink-50"
                 >
-                  <Image
-                    src={banner.image}
-                    alt=""
-                    width={160}
-                    height={65}
-                    className="h-14 w-32 shrink-0 rounded-lg bg-ink-50 object-cover"
-                  />
+                  {banner.background === "color" || !banner.image ? (
+                    <span
+                      aria-hidden
+                      style={{ backgroundColor: banner.backgroundColor }}
+                      className="h-14 w-32 shrink-0 rounded-lg border border-ink-200"
+                    />
+                  ) : (
+                    <Image
+                      src={banner.image}
+                      alt=""
+                      width={160}
+                      height={65}
+                      className="h-14 w-32 shrink-0 rounded-lg bg-ink-50 object-cover"
+                    />
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-ink-900">
                       {banner.headline || banner.slug}
                     </p>
                     <p className="truncate font-mono text-xs text-ink-400">
-                      {banner.href ?? "not linked"}
+                      {banner.background === "color"
+                        ? (banner.backgroundColor ?? "colour")
+                        : "image"}{" "}
+                      · {banner.href ?? "not linked"}
                     </p>
                   </div>
                   <span

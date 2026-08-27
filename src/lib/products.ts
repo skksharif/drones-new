@@ -104,7 +104,28 @@ export function discountPercent(product: Priced): number | null {
 }
 
 /**
- * The "Hot Deals" pool. Genuinely discounted products lead, ranked by saving;
+ * The hand-picked Hot Deals rail.
+ *
+ * `isHotDeal` is set per product in the admin; `hotDealOrder` sequences them.
+ * A product with no order sorts after every numbered one, so adding a deal
+ * without thinking about position still works.
+ */
+export function hotDeals<T extends { isHotDeal?: boolean; hotDealOrder?: number; order?: number }>(
+  products: T[],
+  limit = 12,
+): T[] {
+  return products
+    .filter((product) => product.isHotDeal)
+    .sort(
+      (a, b) =>
+        (a.hotDealOrder ?? Number.MAX_SAFE_INTEGER) - (b.hotDealOrder ?? Number.MAX_SAFE_INTEGER) ||
+        (a.order ?? 0) - (b.order ?? 0),
+    )
+    .slice(0, limit);
+}
+
+/**
+ * The automatic fallback pool. Genuinely discounted products lead, ranked by saving;
  * bestsellers and featured stock fill the rest so the rail is never empty just
  * because nothing happens to be on offer this week.
  */

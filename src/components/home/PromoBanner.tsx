@@ -185,8 +185,13 @@ function Slide({
 }
 
 /**
- * An admin-authored slide. The image is the banner; the copy is optional and
- * sits in a gradient scrim so it stays readable over any photograph.
+ * An admin-authored slide.
+ *
+ * Two backgrounds. An image fills the slide and the copy sits in a gradient
+ * scrim so it stays readable over any photograph; a flat colour has nothing to
+ * carry it, so the copy is centred and the scrim is dropped. `theme` decides
+ * whether the copy is light or dark, because a pale colour and white text is
+ * the one combination that renders the slide unreadable.
  */
 function BannerSlide({
   banner,
@@ -197,34 +202,77 @@ function BannerSlide({
   position: number;
   total: number;
 }) {
-  const hasCopy = Boolean(banner.headline || banner.subline || banner.ctaLabel);
+  const isImage = banner.background !== "color";
+  const light = banner.theme !== "dark";
+  const hasCopy = Boolean(
+    banner.eyebrow || banner.headline || banner.subline || banner.ctaLabel,
+  );
+  const label = banner.alt || banner.headline || `Slide ${position}`;
 
   const content = (
     <>
-      <Image
-        src={banner.image}
-        alt={banner.alt}
-        fill
-        // The slot is full width on a phone and a centred column on desktop.
-        sizes="(min-width: 1024px) 48rem, 100vw"
-        className="object-cover"
-        priority={position === 1}
-      />
+      {isImage && banner.image ? (
+        <Image
+          src={banner.image}
+          alt={banner.alt ?? ""}
+          fill
+          // The slot is full width on a phone and a centred column on desktop.
+          sizes="(min-width: 1024px) 48rem, 100vw"
+          className="object-cover"
+          priority={position === 1}
+        />
+      ) : null}
 
       {hasCopy ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-t from-black/70 via-black/25 to-transparent px-5 pb-4 text-center">
+        <div
+          className={cn(
+            "absolute inset-0 flex flex-col items-center px-5 text-center",
+            isImage
+              ? "justify-end bg-gradient-to-t from-black/70 via-black/25 to-transparent pb-4"
+              : "justify-center py-5",
+          )}
+        >
+          {banner.eyebrow ? (
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full px-3 py-1 text-[0.625rem] font-semibold tracking-[0.12em] uppercase",
+                light ? "bg-white/18 text-white" : "bg-ink-900/10 text-ink-800",
+              )}
+            >
+              {banner.eyebrow}
+            </span>
+          ) : null}
+
           {banner.headline ? (
-            <h2 className="text-xl font-bold uppercase leading-[1.1] tracking-tight text-white sm:text-2xl">
+            <h2
+              className={cn(
+                "text-xl leading-[1.1] font-bold tracking-tight uppercase sm:text-2xl",
+                banner.eyebrow ? "mt-2.5" : "",
+                light ? "text-white" : "text-ink-900",
+              )}
+            >
               {banner.headline}
             </h2>
           ) : null}
+
           {banner.subline ? (
-            <p className="mt-1.5 line-clamp-2-fixed max-w-sm text-xs text-white/85 sm:text-sm">
+            <p
+              className={cn(
+                "line-clamp-2-fixed mt-1.5 max-w-sm text-xs sm:text-sm",
+                light ? "text-white/85" : "text-ink-700",
+              )}
+            >
               {banner.subline}
             </p>
           ) : null}
+
           {banner.ctaLabel ? (
-            <span className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-white px-5 text-xs font-semibold text-brand-800">
+            <span
+              className={cn(
+                "mt-3 inline-flex h-9 items-center gap-1.5 rounded-full px-5 text-xs font-semibold",
+                light ? "bg-white text-brand-800" : "bg-ink-900 text-white",
+              )}
+            >
               {banner.ctaLabel}
               <ChevronRight className="size-3.5" />
             </span>
@@ -240,8 +288,9 @@ function BannerSlide({
     <div
       role="group"
       aria-roledescription="slide"
-      aria-label={`${position} of ${total}: ${banner.alt}`}
+      aria-label={`${position} of ${total}: ${label}`}
       className="relative aspect-[1920/780] w-full shrink-0 snap-start bg-ink-100"
+      style={isImage ? undefined : { backgroundColor: banner.backgroundColor }}
     >
       {banner.href ? (
         <Link href={banner.href} className="absolute inset-0 block">

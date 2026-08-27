@@ -1,0 +1,45 @@
+{
+  "db": "agrosky",
+  "before": [
+    {
+      "slug": "accessories",
+      "order": 0
+    },
+    {
+      "slug": "drones",
+      "order": 1
+    },
+    {
+      "slug": "drone-frames",
+      "order": 2
+    },
+    {
+      "slug": "flight-controllers",
+      "order": 3
+    },
+    {
+      "slug": "motors",
+      "order": 4
+    },
+    {
+      "slug": "batteries",
+      "order": 5
+    },
+    {
+      "slug": "chargers",
+      "order": 6
+    },
+    {
+      "slug": "propellers",
+      "order": 7
+    },
+    {
+      "slug": "controllers-kits",
+      "order": 8
+    },
+    {
+      "slug": "spray-systems",
+      "order": 9
+    }
+  ]
+}

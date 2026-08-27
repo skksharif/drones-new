@@ -1,3 +1,4 @@
+import { HotDealsRail } from "@/components/home/HotDealsRail";
 import { PromoBanner } from "@/components/home/PromoBanner";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { ProductCarousel } from "@/components/product/ProductCarousel";
@@ -5,11 +6,16 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { getCatalogue } from "@/lib/catalogue";
 import { stockedCategories } from "@/lib/categories";
-import { deals as pickDeals, featuredProducts, productsByCategory } from "@/lib/products";
+import {
+  deals as pickDeals,
+  featuredProducts,
+  hotDeals,
+  productsByCategory,
+} from "@/lib/products";
 import { itemListSchema, pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
-import { CartIcon, TagIcon } from "@/components/ui/Icons";
+import { CartIcon } from "@/components/ui/Icons";
 
 export const metadata = pageMetadata({
   title: `${siteConfig.name} — ${siteConfig.tagline}`,
@@ -20,6 +26,10 @@ export const metadata = pageMetadata({
 export default async function HomePage() {
   const { products, categories, banners } = await getCatalogue();
   const deals = pickDeals(products, 10);
+  // Admin-picked deals win. Until anything is flagged, the automatic pool
+  // stands in so the strip is never empty — the products are real either way.
+  const picked = hotDeals(products);
+  const strip = picked.length > 0 ? picked : deals;
   const stocked = stockedCategories(categories, products);
   // The banner only ever advertises live offers; featured stock stands in if
   // nothing is currently discounted.
@@ -43,16 +53,7 @@ export default async function HomePage() {
       <div className="container-page space-y-2.5 py-2.5 sm:space-y-3 sm:py-3">
         <PromoBanner products={banner} banners={liveBanners} />
 
-        {deals.length > 0 ? (
-          <SectionCard
-            icon={<TagIcon />}
-            title="Hot Deals"
-            subtitle="Best prices on top products"
-            href="/products"
-          >
-            <ProductCarousel products={deals} priorityCount={2} ariaLabel="Hot deals" />
-          </SectionCard>
-        ) : null}
+        <HotDealsRail products={strip} />
 
         {stocked.map((category) => (
           <SectionCard
