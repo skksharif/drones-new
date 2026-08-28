@@ -19,9 +19,9 @@ export const siteConfig = {
   currencySymbol: "₹",
 
   contact: {
-    phone: "+919392466177",
-    phoneDisplay: "+91 93924 66177",
-    whatsapp: "919392466177",
+    phone: "+918340000887",
+    phoneDisplay: "+91 83400 00887",
+    whatsapp: "918340000887",
     email: "info@agroskydroneaspirant.com",
     address: {
       street: "Sowbhagya Nagar",
