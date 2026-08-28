@@ -2,7 +2,7 @@ import type { PriceBounds } from "./products";
 import type { Availability, ClientProduct, ProductGroup } from "./types";
 
 export const SORT_OPTIONS = [
-  { value: "relevance", label: "Relevance" },
+  { value: "relevance", label: "Recommended" },
   { value: "newest", label: "Newest" },
   { value: "price-asc", label: "Price: Low to High" },
   { value: "price-desc", label: "Price: High to Low" },
@@ -134,6 +134,60 @@ function matchesPrice(
   return product.price >= min && product.price <= max;
 }
 
+/**
+ * The default order, used to break ties once text relevance has had its say.
+ *
+ * Only out-of-stock is demoted outright: this catalogue's flagship drones are
+ * made-to-order, so treating that as a lesser tier would bury the headline
+ * products beneath spare nozzles. Everything above that is a nudge, not a tier.
+ */
+function recommendedScore(product: ClientProduct): number {
+  let score = product.availability === "out-of-stock" ? 0 : 20;
+  if (product.bestseller) score += 6;
+  if (product.featured) score += 4;
+  if (product.isHotDeal) score += 3;
+  if (product.compareAtPrice && product.price !== null && product.compareAtPrice > product.price) {
+    score += 2;
+  }
+  return score;
+}
+
+/** Ranked order, then newest, then slug so the sequence is fully determined. */
+function byRecommended(a: ClientProduct, b: ClientProduct): number {
+  const rank = recommendedScore(b) - recommendedScore(a);
+  if (rank !== 0) return rank;
+  const date = b.addedAt.localeCompare(a.addedAt);
+  return date !== 0 ? date : a.slug.localeCompare(b.slug);
+}
+
+/**
+ * Round-robins a ranked list across its categories, so the opening rows show
+ * the breadth of the shop instead of five drone frames in a row.
+ *
+ * Buckets keep their ranked order and are visited in the order they first
+ * appear, so the strongest product still leads and nothing is reshuffled
+ * within a category.
+ */
+function interleaveByCategory<T extends ClientProduct>(items: T[]): T[] {
+  const buckets = new Map<string, T[]>();
+  for (const item of items) {
+    const bucket = buckets.get(item.category);
+    if (bucket) bucket.push(item);
+    else buckets.set(item.category, [item]);
+  }
+  if (buckets.size < 2) return items;
+
+  const queues = [...buckets.values()];
+  const out: T[] = [];
+  while (out.length < items.length) {
+    for (const queue of queues) {
+      const next = queue.shift();
+      if (next) out.push(next);
+    }
+  }
+  return out;
+}
+
 export interface FilterResult<T> {
   items: T[];
   total: number;
@@ -172,12 +226,19 @@ export function filterProducts<T extends ClientProduct>(
         return a.product.name.localeCompare(b.product.name);
       case "relevance":
       default:
+        // A search term still wins; the curated order only breaks its ties.
         if (b.score !== a.score) return b.score - a.score;
-        return b.product.addedAt.localeCompare(a.product.addedAt);
+        return byRecommended(a.product, b.product);
     }
   });
 
-  const items = scored.map((s) => s.product);
+  const ranked = scored.map((s) => s.product);
+  // Interleaving a search result would scatter the best matches, and it is
+  // meaningless once the shopper has picked an explicit sort.
+  const items =
+    filters.sort === "relevance" && !filters.q.trim()
+      ? interleaveByCategory(ranked)
+      : ranked;
   return { items, total: items.length };
 }
 
