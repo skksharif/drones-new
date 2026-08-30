@@ -22,7 +22,7 @@ export function pageMetadata({
   title,
   description,
   path,
-  image = "/images/banners/1.png",
+  image = siteConfig.ogImage,
   type = "website",
   keywords,
   noIndex,

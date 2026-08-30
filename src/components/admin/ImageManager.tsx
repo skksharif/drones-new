@@ -212,7 +212,7 @@ export function ImageManager({
             add([manual.trim()]);
             setManual("");
           }}
-          placeholder="/images/products/example.png"
+          placeholder="https://res.cloudinary.com/…/image.jpg"
           className="h-10 flex-1 rounded-xl border border-ink-200 px-3.5 font-mono text-xs outline-none focus:border-brand-700/50"
         />
         <button

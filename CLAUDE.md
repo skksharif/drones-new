@@ -11,7 +11,6 @@ npm run dev            # next dev (Turbopack) on :3000
 npm run build          # next build — also the only way to catch typed-route errors
 npm run lint           # eslint (flat config, eslint-config-next core-web-vitals + typescript)
 npx tsc --noEmit       # type check
-npm run seed           # load data/*.json into MongoDB (add -- --force to overwrite)
 npm run admin:password # print ADMIN_PASSWORD_HASH + ADMIN_SESSION_SECRET (-- --write edits .env.local)
 ```
 
@@ -37,8 +36,8 @@ Content is real business data (AgroSky Drone Aspirant, Vuyyuru AP). Don't invent
 
 The catalogue lives in **MongoDB**, read through `catalogue.ts`:
 
-- `getCatalogue()` is wrapped in React `cache()`, so a page with six rails makes one round trip. It is **server-only** — it pulls in the driver and the seed data. It returns `products`, `categories` and `banners`.
-- With no `MONGODB_URI`, and with an empty cluster, it falls back to `data/products.json` / `data/categories.json`. That is why the site builds and runs with no configuration at all, and why the admin panel goes read-only rather than erroring.
+- `getCatalogue()` is wrapped in React `cache()`, so a page with six rails makes one round trip. It is **server-only** — it pulls in the MongoDB driver. It returns `products`, `categories` and `banners`.
+- **MongoDB is the only source.** There is no committed-JSON fallback: one cannot be kept in step with the live catalogue, so the failure it prevents (a blank shop) is traded for a worse one — a shop quietly serving stale products and prices. Without `MONGODB_URI` the build fails with a clear message rather than shipping, so `next build` now requires a reachable cluster. There is no `data/` directory and no seed script: the catalogue exists only in MongoDB, and a snapshot lives in `scripts/backups/db-export-*.json`.
 - `toClientCatalogue()` drops `description` and `highlights` (`ClientProduct`) before handing the catalogue to the browser.
 - Document order is not guaranteed, so both types carry `order`. The seed script assigns it from array position and the admin reorder buttons rewrite it.
 

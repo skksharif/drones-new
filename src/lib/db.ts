@@ -22,7 +22,9 @@ export function getClient(): Promise<MongoClient> {
   const uri = process.env.MONGODB_URI;
   if (!uri) {
     throw new Error(
-      "MONGODB_URI is not set. Check hasDatabase() before calling getClient().",
+      "MONGODB_URI is not set. The catalogue is read from MongoDB only — there " +
+        "is no committed-JSON fallback — so the site cannot build or run " +
+        "without it. Set it in .env.local (and in the hosting environment).",
     );
   }
 

@@ -1,8 +1,5 @@
 import { cache } from "react";
-import { COLLECTIONS, getDb, hasDatabase } from "./db";
-import bannersSeed from "../../data/banners.json";
-import categoriesSeed from "../../data/categories.json";
-import productsSeed from "../../data/products.json";
+import { COLLECTIONS, getDb } from "./db";
 import type {
   BannerDef,
   Catalogue,
@@ -19,17 +16,15 @@ import type {
  * request — so the site keeps serving static HTML. After an edit the admin
  * panel calls `revalidatePath`, and only the affected pages regenerate.
  *
- * Never import this from a client component: it pulls in the driver and the
- * seed data. Client code reads {@link ClientCatalogue} from the catalogue
- * context instead.
+ * MongoDB is the only source. There is deliberately no committed-JSON
+ * fallback: a fallback cannot be kept in step with the live catalogue, so the
+ * failure it prevents (a blank shop) is replaced by a worse one — a shop
+ * quietly serving stale products and prices nobody edited. Without
+ * `MONGODB_URI` this throws, and the build stops rather than shipping.
+ *
+ * Never import this from a client component: it pulls in the driver. Client
+ * code reads {@link ClientCatalogue} from the catalogue context instead.
  */
-
-/** Committed JSON, used to seed a new database and to run without one. */
-const seed: Catalogue = {
-  products: productsSeed as unknown as Product[],
-  categories: categoriesSeed as unknown as CategoryDef[],
-  banners: bannersSeed as unknown as BannerDef[],
-};
 
 /**
  * Reads the catalogue once per request. `cache` dedupes it across every
@@ -37,8 +32,6 @@ const seed: Catalogue = {
  * one round trip.
  */
 export const getCatalogue = cache(async (): Promise<Catalogue> => {
-  if (!hasDatabase()) return seed;
-
   const db = await getDb();
   const [products, categories, banners] = await Promise.all([
     db
@@ -57,10 +50,6 @@ export const getCatalogue = cache(async (): Promise<Catalogue> => {
       .sort({ order: 1 })
       .toArray(),
   ]);
-
-  // An empty cluster (first deploy, before seeding) must not blank the site.
-  // Banners are excluded from the test on purpose: having none is normal.
-  if (products.length === 0 && categories.length === 0) return seed;
 
   return { products, categories, banners };
 });

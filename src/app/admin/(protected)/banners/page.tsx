@@ -4,7 +4,6 @@ import { AdminNotice } from "@/components/admin/AdminNotice";
 import { MoveButtons } from "@/components/admin/MoveButtons";
 import { ButtonLink } from "@/components/ui/Button";
 import { getCatalogue } from "@/lib/catalogue";
-import { hasDatabase } from "@/lib/db";
 
 export const metadata = { title: "Banners" };
 
@@ -33,10 +32,6 @@ export default async function AdminBannersPage({ searchParams }: PageProps<"/adm
       {typeof params.deleted === "string" ? (
         <AdminNotice tone="success">Deleted &ldquo;{params.deleted}&rdquo;.</AdminNotice>
       ) : null}
-      {hasDatabase() ? null : (
-        <AdminNotice tone="warning">No database is configured, so banners are read-only.</AdminNotice>
-      )}
-
       {banners.length === 0 ? (
         <div className="rounded-[var(--radius-card)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
           <p className="text-sm text-ink-600">No banners yet.</p>

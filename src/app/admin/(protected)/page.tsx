@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getCatalogue } from "@/lib/catalogue";
-import { hasDatabase } from "@/lib/db";
 import { countByCategory } from "@/lib/products";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 
@@ -42,7 +41,6 @@ const DATE = new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", 
 export default async function AdminOverviewPage() {
   const { products, categories, banners } = await getCatalogue();
 
-  const live = hasDatabase();
   const enquiryOnly = products.filter((p) => p.price === null).length;
   const discounted = products.filter(
     (p) => p.price !== null && p.compareAtPrice && p.compareAtPrice > p.price,
@@ -64,9 +62,7 @@ export default async function AdminOverviewPage() {
       <div>
         <h1 className="text-2xl font-bold text-ink-900">Catalogue overview</h1>
         <p className="mt-1 text-sm text-ink-500">
-          {live
-            ? "Editing the live database. Saved changes rebuild the affected pages straight away."
-            : "No database is configured, so the site is serving the committed seed catalogue. Editing is read-only until MONGODB_URI is set."}
+          Editing the live database. Saved changes rebuild the affected pages straight away.
         </p>
       </div>
 

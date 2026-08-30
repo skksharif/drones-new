@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
   description:
     "Drone crop spraying, aerial surveying, firefighting support, pilot training and hands-on drone experience across Andhra Pradesh and Telangana from AgroSky Drone Aspirant.",
   path: "/services",
-  image: "/images/services/crop-spraying.jpg",
+  image: services[0].image,
   keywords: [
     "drone crop spraying service",
     "aerial survey drone India",

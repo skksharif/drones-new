@@ -1,0 +1,322 @@
+{
+  "cloud": "dwflity58",
+  "manifest": [
+    {
+      "collection": "products",
+      "slug": "agrosky-agricultural-spraying-drone",
+      "field": "image",
+      "local": "/images/services/crop-spraying.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167783/agrosky/images/services/crop-spraying.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "agrosky-agricultural-spraying-drone",
+      "field": "gallery",
+      "local": [
+        "/images/products/p1.jpg",
+        "/images/banners/1.png"
+      ],
+      "remote": [
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787167770/agrosky/images/products/p1.jpg",
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787167767/agrosky/images/banners/1.png"
+      ]
+    },
+    {
+      "collection": "products",
+      "slug": "agrosky-surveillance-drone",
+      "field": "image",
+      "local": "/images/services/plane.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167785/agrosky/images/services/plane.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "agrosky-surveillance-drone",
+      "field": "gallery",
+      "local": [
+        "/images/drones/map.jpg"
+      ],
+      "remote": [
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787167769/agrosky/images/drones/map.jpg"
+      ]
+    },
+    {
+      "collection": "products",
+      "slug": "agrosky-firefighting-drone",
+      "field": "image",
+      "local": "/images/services/fire-fighting.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167784/agrosky/images/services/fire-fighting.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "agrosky-human-flying-drone",
+      "field": "image",
+      "local": "/images/drones/drone.png",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167768/agrosky/images/drones/drone.png"
+    },
+    {
+      "collection": "products",
+      "slug": "agrosky-human-flying-drone",
+      "field": "gallery",
+      "local": [
+        "/images/banners/1.png"
+      ],
+      "remote": [
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787167767/agrosky/images/banners/1.png"
+      ]
+    },
+    {
+      "collection": "products",
+      "slug": "eft-e610p-16l-6-axis-agricultural-drone-frame",
+      "field": "image",
+      "local": "/images/products/p1.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167770/agrosky/images/products/p1.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "eft-e416p-agricultural-drone-frame",
+      "field": "image",
+      "local": "/images/products/p2.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167778/agrosky/images/products/p2.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "s500-drone-frame",
+      "field": "image",
+      "local": "/images/products/p3.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167779/agrosky/images/products/p3.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "s550-drone-frame",
+      "field": "image",
+      "local": "/images/products/p20.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167778/agrosky/images/products/p20.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "hobbywing-x9-plus-36190-drone-motors",
+      "field": "image",
+      "local": "/images/products/p14.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167773/agrosky/images/products/p14.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "hobbywing-xrotor-x6-plus-150kv-motor-propeller-combo",
+      "field": "image",
+      "local": "/images/products/p15.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167774/agrosky/images/products/p15.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "hobbywing-x8-motor-folding-propeller-combo-kit",
+      "field": "image",
+      "local": "/images/products/p16.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167775/agrosky/images/products/p16.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "hobbywing-x8-3011-propeller",
+      "field": "image",
+      "local": "/images/products/p5.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167781/agrosky/images/products/p5.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "hobbywing-x6-plus-2480-propellers-with-hub-ccw",
+      "field": "image",
+      "local": "/images/products/p6.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167781/agrosky/images/products/p6.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "pixhawk-flight-controller",
+      "field": "image",
+      "local": "/images/products/p10.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167771/agrosky/images/products/p10.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "pixhawk-cube-flight-controller",
+      "field": "image",
+      "local": "/images/products/p11.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167771/agrosky/images/products/p11.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "naza-m-v2-gps-combo",
+      "field": "image",
+      "local": "/images/products/p7.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167783/agrosky/images/products/p7.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "k-plus-plus-v2-flight-controller-kit",
+      "field": "image",
+      "local": "/images/products/p12.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167772/agrosky/images/products/p12.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "k3-apro-flight-controller-kit",
+      "field": "image",
+      "local": "/images/products/p13.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167773/agrosky/images/products/p13.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "dual-head-extended-spray-nozzle",
+      "field": "image",
+      "local": "/images/products/p17.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167775/agrosky/images/products/p17.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "dual-header-y-type-spray-nozzle",
+      "field": "image",
+      "local": "/images/products/p18.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167776/agrosky/images/products/p18.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "centrifugal-nozzles",
+      "field": "image",
+      "local": "/images/products/p19.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167777/agrosky/images/products/p19.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "landing-gear-bar-20x500-e410p-e610p",
+      "field": "image",
+      "local": "/images/products/p4.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167780/agrosky/images/products/p4.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "eft-e616p-10l-6-axis-agricultural-drone-frame",
+      "field": "image",
+      "local": "/images/products/p1.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167770/agrosky/images/products/p1.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "jis-nv20-agriculture-drone-frame-kit-20-l-heavy-duty-spray-uav-chassis",
+      "field": "image",
+      "local": "/images/products/r4rc6ds6eqbkrydj5uir.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787683465/agrosky/products/r4rc6ds6eqbkrydj5uir.jpg"
+    },
+    {
+      "collection": "products",
+      "slug": "jis-nv20-agriculture-drone-frame-kit-20-l-heavy-duty-spray-uav-chassis",
+      "field": "gallery",
+      "local": [
+        "/images/products/uuxrvnjeye0ntvuhiogx.jpg",
+        "/images/products/pke1enoyz1bvdhrazizh.jpg",
+        "/images/products/lwvoqz5nbyz3afpgadpv.jpg"
+      ],
+      "remote": [
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787683478/agrosky/products/uuxrvnjeye0ntvuhiogx.jpg",
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787683493/agrosky/products/pke1enoyz1bvdhrazizh.jpg",
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787683500/agrosky/products/lwvoqz5nbyz3afpgadpv.jpg"
+      ]
+    },
+    {
+      "collection": "products",
+      "slug": "eft-g18-20l-agricultural-drone-frame",
+      "field": "image",
+      "local": "/images/products/f7d7vk4sfbzz3cxm6odi.png",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787685079/agrosky/products/f7d7vk4sfbzz3cxm6odi.png"
+    },
+    {
+      "collection": "products",
+      "slug": "eft-g18-20l-agricultural-drone-frame",
+      "field": "gallery",
+      "local": [
+        "/images/products/alw0rransf9hqnwxnqo4.png",
+        "/images/products/pzih0nsfwkwwbm7sjjgu.png",
+        "/images/products/vcglwmendszqrebpxeho.png"
+      ],
+      "remote": [
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787685085/agrosky/products/alw0rransf9hqnwxnqo4.png",
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787685089/agrosky/products/pzih0nsfwkwwbm7sjjgu.png",
+        "https://res.cloudinary.com/dwflity58/image/upload/v1787685092/agrosky/products/vcglwmendszqrebpxeho.png"
+      ]
+    },
+    {
+      "collection": "categories",
+      "slug": "drones",
+      "field": "image",
+      "local": "/images/services/crop-spraying.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167783/agrosky/images/services/crop-spraying.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "accessories",
+      "field": "image",
+      "local": "/images/products/p4.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167780/agrosky/images/products/p4.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "drone-frames",
+      "field": "image",
+      "local": "/images/products/p1.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167770/agrosky/images/products/p1.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "motors",
+      "field": "image",
+      "local": "/images/products/p14.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167773/agrosky/images/products/p14.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "flight-controllers",
+      "field": "image",
+      "local": "/images/products/p10.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167771/agrosky/images/products/p10.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "batteries",
+      "field": "image",
+      "local": "/images/products/p13.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167773/agrosky/images/products/p13.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "chargers",
+      "field": "image",
+      "local": "/images/products/p16.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167775/agrosky/images/products/p16.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "propellers",
+      "field": "image",
+      "local": "/images/products/p6.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167781/agrosky/images/products/p6.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "controllers-kits",
+      "field": "image",
+      "local": "/images/products/p12.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167772/agrosky/images/products/p12.jpg"
+    },
+    {
+      "collection": "categories",
+      "slug": "spray-systems",
+      "field": "image",
+      "local": "/images/products/p18.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787167776/agrosky/images/products/p18.jpg"
+    },
+    {
+      "collection": "banners",
+      "slug": "sale-eft-e616p-10l-frame",
+      "field": "image",
+      "local": "/images/products/rhv56ulmojp9icwk6ndm.jpg",
+      "remote": "https://res.cloudinary.com/dwflity58/image/upload/v1787860823/agrosky/products/rhv56ulmojp9icwk6ndm.jpg"
+    }
+  ]
+}

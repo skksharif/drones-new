@@ -3,7 +3,6 @@ import Link from "next/link";
 import { AdminNotice } from "@/components/admin/AdminNotice";
 import { ButtonLink } from "@/components/ui/Button";
 import { getCatalogue } from "@/lib/catalogue";
-import { hasDatabase } from "@/lib/db";
 import { formatPrice } from "@/lib/format";
 import { discountPercent } from "@/lib/products";
 
@@ -49,12 +48,6 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
       {typeof params.error === "string" ? (
         <AdminNotice tone="danger">{params.error}</AdminNotice>
       ) : null}
-      {hasDatabase() ? null : (
-        <AdminNotice tone="warning">
-          No database is configured, so the catalogue is read-only. Set <code>MONGODB_URI</code> and
-          run <code>npm run seed</code> to start editing.
-        </AdminNotice>
-      )}
 
       <form className="flex flex-wrap gap-2 rounded-[var(--radius-card)] bg-white p-3 shadow-[var(--shadow-card)]">
         <input

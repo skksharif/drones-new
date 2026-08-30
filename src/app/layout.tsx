@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [
       {
-        url: "/images/banners/1.png",
+        url: siteConfig.ogImage,
         width: 1200,
         height: 630,
         alt: `${siteConfig.name} agricultural drones and spare parts`,
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
-    images: ["/images/banners/1.png"],
+    images: [siteConfig.ogImage],
   },
   robots: {
     index: true,

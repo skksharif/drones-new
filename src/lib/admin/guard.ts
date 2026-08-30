@@ -19,12 +19,13 @@ export class AdminError extends Error {}
 
 /**
  * Writes need somewhere to write to. Without a cluster the site runs off the
- * committed seed catalogue, which is read-only by design.
+ * MongoDB. Reads already fail without it, so this is a belt-and-braces guard
+ * on the write path.
  */
 export function requireDatabase(): void {
   if (!hasDatabase()) {
     throw new AdminError(
-      "No database is configured, so the catalogue is read-only. Set MONGODB_URI and run `npm run seed`.",
+      "No database is configured. Set MONGODB_URI to edit the catalogue.",
     );
   }
 }
