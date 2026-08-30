@@ -12,14 +12,14 @@
 const CDN = "https://res.cloudinary.com/hkqj6g5s/image/upload/agrosky/images";
 
 export const siteConfig = {
-  name: "AgroSky Drone Aspirant",
+  name: "AgroSky Drone Aspirant Private Limited",
   legalName: "AGROSKY DRONE ASPIRANT PRIVATE LIMITED",
   /** Default Open Graph / Twitter card image. */
   ogImage: `${CDN}/banners/1.png`,
   wordmark: "NEXTGENDRONES",
   tagline: "Next-Gen Drones for Agriculture",
   description:
-    "Buy agricultural spraying drones, drone frames, flight controllers, motors, propellers and spray nozzles from AgroSky Drone Aspirant — next-generation UAV systems built for Indian farming.",
+  "Shop agricultural spraying drones and drone parts from AgroSky Drone Aspirant Private Limited in Vijayawada, Vuyyuru, Andhra Pradesh and Telangana. Explore drone frames, Hobbywing motors, propellers, Pixhawk flight controllers, landing gear, spray nozzles and other genuine UAV components for farming.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.agroskydroneaspirant.com",
   founder: "Chandhan Akunuri",
   founderRole: "Director & Founder",
@@ -32,7 +32,7 @@ export const siteConfig = {
     phone: "+918340000887",
     phoneDisplay: "+91 83400 00887",
     whatsapp: "918340000887",
-    email: "info@agroskydroneaspirant.com",
+    email: "help@agroskydroneaspirant.com",
     address: {
       street: "Sowbhagya Nagar",
       locality: "Vuyyuru",
